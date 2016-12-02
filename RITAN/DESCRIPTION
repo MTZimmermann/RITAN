@@ -1,0 +1,24 @@
+Package: RITAN
+Type: Package
+Title: Rapid Integration of Term Annotation and Network resources
+Version: 1.0.0
+Author: Michael Zimmermann
+Maintainer: Michael Zimmermann <zimmermann.michael@mayo.edu>
+Description: Tools for comprehensive gene set enrichment and extraction of
+    multi-resource high confidence subnetworks.
+LazyData: TRUE
+Imports: grid, gridExtra, reshape2, ggplot2, RColorBrewer, RITANdata
+VignetteBuilder: knitr
+Collate: 'lib_enrichment.R' 'lib_network.R'
+        'interconnectivity_functions.R'
+RoxygenNote: 5.0.1
+Suggests: knitr, rmarkdown
+License: GPL-2 + file LICENSE
+RemoteType: local
+RemoteUrl:
+        /data2/bsi/staff_analysis/m107607/VRG_Poland/r_package_network_biology/RITAN
+RemoteSha: 1.0
+biocViews: NetworkEnrichment, NetworkInference, GeneSetEnrichment,
+        FunctionalGenomics
+NeedsCompilation: no
+Packaged: 2016-12-01 15:10:08 UTC; m107607
