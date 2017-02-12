@@ -4,10 +4,10 @@
 \alias{summary.term_enrichment_by_subset}
 \title{summary.term_enrichment_by_subset}
 \usage{
-\method{summary}{term_enrichment_by_subset}(x, verbose = TRUE, ...)
+\method{summary}{term_enrichment_by_subset}(object, verbose = TRUE, ...)
 }
 \arguments{
-\item{x}{data frame returned by term_enrichment_by_subset()}
+\item{object}{data frame returned by term_enrichment_by_subset()}
 
 \item{verbose}{if TRUE (default), print a header describing the data type}
 

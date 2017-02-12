@@ -5,7 +5,8 @@
 \title{term_enrichment_by_subset}
 \usage{
 term_enrichment_by_subset(groups = NA, term_sources = term_sources.default,
-  q_value_threshold = 0.01, display_type = "q", phred = TRUE, ...)
+  q_value_threshold = 0.01, verbose = TRUE, display_type = "q",
+  phred = TRUE, ...)
 }
 \arguments{
 \item{groups}{A list() of genes for enrichment. Each entry in the list() is an input set of genes. Enrichment is performed for each of these entries.}
@@ -13,6 +14,8 @@ term_enrichment_by_subset(groups = NA, term_sources = term_sources.default,
 \item{term_sources}{character vector for which resources to use in enrichment}
 
 \item{q_value_threshold}{minimum q-value (FDR adjusted p-value) in any group for the term to be included in results}
+
+\item{verbose}{print additional status updates on what the function is doing}
 
 \item{display_type}{Flag for which data type will be returned. One of "q" (default) for q-values, "p" for unadjusted p-values, or "n" for the number of genes overlapping the term.}
 

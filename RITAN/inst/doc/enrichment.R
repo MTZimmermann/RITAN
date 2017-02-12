@@ -1,13 +1,11 @@
-## ----first_load_packages, include=FALSE, warning=FALSE-------------------
-library(grid)
-library(gridExtra)
-library(RColorBrewer)
-library(RITANdata)
-
 ## ----first_load, echo=TRUE, warning=FALSE--------------------------------
+library(RITANdata)
 library(RITAN)
-# data(package="RITANdata", geneset_list)
-# data(package="RITANdata", all_symbols)
+
+## ----quick_start, echo=TRUE, warning=FALSE-------------------------------
+my_genes <- c('ABCA2','ACAT2','ACSS2','CD9','CPEB2','CTNNB1','FASN','LDLR','LPL','LSS')
+e <- term_enrichment(my_genes)
+summary(e)
 
 ## ----echo_geneset_list_names, echo=TRUE----------------------------------
 names(geneset_list)
@@ -48,16 +46,15 @@ plot( e, show_values = TRUE, label_size_y = 7, label_size_x = 7, cap=10,
       annotation_matrix = mat, grid_line_color = 'black' )
 
 ## ----apply_enrichment_to_selection_n, echo=TRUE--------------------------
-n <- term_enrichment_by_subset( study_set, q_value_threshold = 1e-5, 
+n <- term_enrichment_by_subset( study_set, q_value_threshold = 1e-5,
                                 term_sources = c("KEGG_filtered_canonical_pathways",
                                                  "MSigDB_Hallmarks"),
                                 display_type = 'n', phred = FALSE )
 
 ## ----apply_enrichment_to_selection_n_plot, echo=TRUE, fig.width = 7, fig.height = 6----
-plot( n, show_values = TRUE, label_size_y = 7, label_size_x = 7 )
+plot( n, show_values = TRUE, label_size_y = 7, label_size_x = 7, cap = 20 )
 
 ## ----term_enrichment1, eval=FALSE----------------------------------------
-#  library(RITAN)
 #  data("vac1.day0vs31.de.genes")
 #  te <- term_enrichment( geneset = vac1.day0vs31.de.genes )
 
@@ -72,6 +69,8 @@ plot( n, show_values = TRUE, label_size_y = 7, label_size_x = 7 )
 ## ----term_enrichment_add_gmt, echo=TRUE----------------------------------
 gs  <- geneset_list$MSigDB_C7[['GSE6269_HEALTHY_VS_FLU_INF_PBMC_UP']]
 gmt <- system.file("extdata", "curated_gene_disease_associations.gmt.gz", package="RITAN")
+
+# -->> Not running here for brevity
 # geneset_list$DisGeNet <- readGMT(gmt)
 # str(head(geneset_list$DisGeNet))
 
@@ -106,7 +105,7 @@ data("vac2.day0vs31.de.genes")
 enrich <- enrichment_symbols( geneset = vac2.day0vs31.de.genes )
 head(enrich$name)
 
-## ----term.enrichment.example, eval = FALSE-------------------------------
+## ----term_enrichment.example, eval = FALSE-------------------------------
 #  e.together <- term_enrichment( geneset = vac2.day0vs31.de.genes )
 #  e.separate <- term_enrichment( geneset = vac2.day0vs31.de.genes,
 #                                 report_resources_separately = TRUE )

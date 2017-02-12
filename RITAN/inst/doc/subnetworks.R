@@ -1,7 +1,6 @@
-## ----load_data from package, echo=TRUE-----------------------------------
-library(RITAN)
+## ----load_data from package, echo=TRUE, results='hide'-------------------
 library(RITANdata)
-data(package="RITANdata", network_list)
+library(RITAN)
 
 ## ----citation, echo=TRUE-------------------------------------------------
 require(knitr)
@@ -9,42 +8,50 @@ kable( attr(network_list, 'network_data_sources') )
 
 ## ----example1, echo=TRUE-------------------------------------------------
 my_genes <- geneset_list$MSigDB_C7[['GSE6269_HEALTHY_VS_FLU_INF_PBMC_DN']]
-net <- subSIF( my_genes )
+net <- network_overlap( my_genes, Net2Use = 'HPRD' )
 
 ## ----example1.1, echo=TRUE-----------------------------------------------
 net[ 1:5, ]
 
-## ----example2, echo=TRUE-------------------------------------------------
-net2 <- subSIF( my_genes, minStringScore = 700 )
-str(net2)
+## ----example2, echo=TRUE, eval=FALSE-------------------------------------
+#  net2 <- network_overlap( my_genes, Net2Use = c('HPRD','STRING'), minStringScore = 700 )
+#  str(net2)
+
+## ----check_input1, echo = TRUE-------------------------------------------
+my_genes <- geneset_list$MSigDB_C2[['VERNOCHET_ADIPOGENESIS']]
+i <- check_any_net_input( my_genes )
+table(i)
+
+## ----check_input2, echo = TRUE-------------------------------------------
+i <- check_net_input( my_genes, network_list[['dPPI']] )
+table(i)
+names(i)[i == 'no']
 
 ## ----example3_1, echo=TRUE-----------------------------------------------
-my_genes <- geneset_list$MSigDB_C2[['VERNOCHET_ADIPOGENESIS']]
+my_genes <- geneset_list$MSigDB_C7[['GOLDRATH_NAIVE_VS_MEMORY_CD8_TCELL_UP']]
+net3.1 <- network_overlap( my_genes, Net2Use = 'PID',
+                           include_neighbors = FALSE, dedup = TRUE )
 
-net3.1 <- subSIF( my_genes, include_neighbors = FALSE, dedup = TRUE )
-str(net3.1)
-# 
-# net3.2 <- subSIF( my_genes, include_neighbors = TRUE, dedup = TRUE )
-# str(net3.2)
-net3.2 <- subSIF( my_genes, include_neighbors = TRUE, dedup = TRUE, minStringScore = 990 )
+nets2use <- c('PID','dPPI','TFe','HumanNet','CCSB')
+net3.2 <- network_overlap( my_genes, Net2Use = nets2use,
+                           include_neighbors = FALSE, dedup = TRUE )
 
-## ----example3_3a, echo=TRUE----------------------------------------------
-net3.3 <- subSIF( my_genes, include_neighbors = TRUE, dedup = TRUE, minStringScore = 990 )
-str(net3.3)
-
-## ----example3_3, echo=TRUE-----------------------------------------------
-net3.3 <- subSIF( my_genes, include_neighbors = TRUE, dedup = TRUE, Net2Use = c('HPRD','CCSB') )
-str(net3.3)
+net3.3 <- network_overlap( my_genes, Net2Use = 'PID',
+                           include_neighbors = TRUE, dedup = TRUE )
 
 ## ----example4, fig.height = 5, fig.width = 5, fig.align = 'center'-------
 require(igraph)
-edges <- as.matrix( net3.1[, c(1,3)] )
+net4 <- network_overlap( my_genes, Net2Use = c('PID','dPPI','TFe'),
+                         include_neighbors = FALSE, dedup = TRUE )
+edges <- as.matrix( net4[, c(1,3)] )
 G <- graph( c(t(edges)), directed = FALSE )
 par(mar=rep(0,4))
 plot(G, vertex.size = 20, vertex.frame.color = 'white' )
 
 ## ----example5, echo=TRUE, eval=FALSE-------------------------------------
-#  g <- unique(c( net3.1$p1, net3.1$p2 ))
+#  my_genes <- geneset_list$MSigDB_C2[['VERNOCHET_ADIPOGENESIS']]
+#  net5 <- network_overlap( my_genes )
+#   g <- unique(c( net5$p1, net5$p2 ))
 #  
 #  tab <- data.frame( gene      = c('FABP4',  'CEBPA','PPARG','ADRB3','RETN','AGT','HP',
 #                                   'RARRES2','PANK3','FFAR2','LUM',  'MC2R','ADCYAP1R1'),
@@ -79,7 +86,7 @@ plot(G, vertex.size = 20, vertex.frame.color = 'white' )
 #  
 #  ## After correcting a few gene names, get the induced subnetwork from mouse data.
 #  my_mouse <- c('Sost','Fxyd4','Tmprss6','CRTAP','Thpo','KCNN4','Osm','Slc29a3','ALB')
-#  net.m <- subSIF( my_mouse, include_neighbors = TRUE, Net2Use = c('BioGRID_Mouse') )
+#  net.m <- network_overlap( my_mouse, include_neighbors = TRUE, Net2Use = c('BioGRID_Mouse') )
 #  str(net.m)
 #  # Generating undirected subnetwork...
 #  # Total induced subnetwork from 9 genes has 17 nodes and 17 edges (17 unique).
@@ -100,7 +107,7 @@ plot(G, vertex.size = 20, vertex.frame.color = 'white' )
 #  # "yes"    "no"    "no"   "yes"    "no"   "yes"   "yes"    "no"   "yes"
 #  
 #  ## Get the induced subnetowrk from human data
-#  net.h <- subSIF( my_mouse, include_neighbors = TRUE, Net2Use = c('BioGRID_Human') )
+#  net.h <- network_overlap( my_mouse, include_neighbors = TRUE, Net2Use = c('BioGRID_Human') )
 #  str(net.h)
 #  # Generating undirected subnetwork...
 #  # Total induced subnetwork from 9 genes has 224 nodes and 755 edges (634 unique).
@@ -111,7 +118,7 @@ plot(G, vertex.size = 20, vertex.frame.color = 'white' )
 #  
 
 ## ----example7, echo=TRUE, eval=TRUE--------------------------------------
-net <- subSIF( 'FOXP3', include_neighbors = TRUE, minStringScore = 990 )
+net <- network_overlap( 'FOXP3', include_neighbors = TRUE, Net2Use = c("PID","dPPI","CCSB" ) )
 genes <- unique(c( net$p1, net$p2 ))
 e1 <- term_enrichment( genes, "Blood_Translaiton_Modules", verbose=FALSE )
 summary(e1)

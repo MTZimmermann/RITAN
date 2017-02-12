@@ -4,7 +4,7 @@
 \alias{plot.term_enrichment_by_subset}
 \title{plot.term_enrichment_by_subset}
 \usage{
-\method{plot}{term_enrichment_by_subset}(m, show_values = TRUE,
+\method{plot}{term_enrichment_by_subset}(x, show_values = TRUE,
   annotation_matrix = NA, low = "white", high = "#2166AC",
   return_ggplot_object = FALSE, label_size_x = 16, label_angle_x = -30,
   label_size_y = 9, wrap_y_labels = 20, grid_line_color = "white",
@@ -13,7 +13,7 @@
   annotation_legend_x = -0.3, ...)
 }
 \arguments{
-\item{m}{data frame returned by term_enrichment_by_subset}
+\item{x}{data frame returned by term_enrichment_by_subset}
 
 \item{show_values}{True or False, plot values on the heatmap}
 

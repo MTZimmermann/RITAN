@@ -5,8 +5,7 @@
 \title{load_all_protein_coding_symbols}
 \usage{
 
-  load_all_protein_coding_symbols(file = paste("ftp://ftp.ebi.ac.uk/pub/databases/genenames",
-  "/new/tsv/locus_groups/protein-coding_gene.txt", sep = "", collapse = ""),
+  load_all_protein_coding_symbols(file = "ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/locus_groups/protein-coding_gene.txt",
   col_name = "symbol")
 }
 \arguments{

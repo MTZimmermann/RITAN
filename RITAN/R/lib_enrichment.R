@@ -296,9 +296,7 @@ show_active_genesets_hist <- function(nbins = 50, ...){
 #' @return A unique list of gene symbols from the current protein coding set at the EBI
 #' 
 load_all_protein_coding_symbols <- function(
-      file = paste( 'ftp://ftp.ebi.ac.uk/pub/databases/genenames',
-                    '/new/tsv/locus_groups/protein-coding_gene.txt',
-                    sep='', collapse = ''),
+      file = 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/locus_groups/protein-coding_gene.txt',
       col_name = 'symbol'
       ){
   s <- read.table( file, sep="\t", header=TRUE, as.is=TRUE, quote="", comment.char = '' )
@@ -520,10 +518,14 @@ geneset.overlap <- function( s1, s2 = s1, threshold = 0.5, verbose = TRUE,
 term_enrichment <- function( geneset, term_sources = term_sources.default,
                              report_resources_separately = FALSE,
                              verbose = TRUE, ... ){
-
+  
+  if ( (!exists('all_symbols')) || all(is.na(all_symbols)) ){
+    all_symbols <- load_all_protein_coding_symbols()
+  }
+  
   enrich <- list()
   process_source <- function( s_file, v=TRUE ){
-
+    
     load_geneset_symbols( s_file, verbose = v ) # load into active_genesets
 
     all_symbols_active <- unique(c(unlist( active_genesets ))) # baseline background
@@ -573,6 +575,7 @@ term_enrichment <- function( geneset, term_sources = term_sources.default,
 #' @param groups A list() of genes for enrichment. Each entry in the list() is an input set of genes. Enrichment is performed for each of these entries.
 #' @param term_sources character vector for which resources to use in enrichment
 #' @param q_value_threshold minimum q-value (FDR adjusted p-value) in any group for the term to be included in results
+#' @param verbose print additional status updates on what the function is doing
 #' @param display_type Flag for which data type will be returned. One of "q" (default) for q-values, "p" for unadjusted p-values, or "n" for the number of genes overlapping the term.
 #' @param phred Logical flag (default TRUE) to return the -log10 of p/q values
 #' @param ... Further arguments are passed on to enrichment_symbols()
@@ -599,7 +602,7 @@ term_enrichment <- function( geneset, term_sources = term_sources.default,
 #' }
 #' 
 term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.default,
-                                       q_value_threshold = 0.01,
+                                       q_value_threshold = 0.01, verbose = TRUE,
                                        display_type = 'q', phred=TRUE, ... ){
 
   ## Make a matrix for the term enrichment of each "group" (a list where each entry is a vector of genes)
@@ -614,10 +617,11 @@ term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.
   
   ## Load the requested resources
   ## This will load them as a group into "active_genesets"
-  load_geneset_symbols(term_sources)
+  load_geneset_symbols(term_sources, verbose = verbose)
   
   ## get enrichments (each is sorted by p)
   ## This function acts on "active_genesets"
+  if(verbose){ cat("\tRunning Enrichment...", sep=" ") }
   e <- lapply( groups, enrichment_symbols, ... ) # optional arguments are sent on
 
   ## sort them together
@@ -625,6 +629,7 @@ term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.
   e <- lapply( e, function(x){ x[ match(term.order,x$name), ] })
 
   ## filter by q-value
+  if(verbose){ cat("FDR adjustment...", sep=" ") }
   i <- apply( do.call( cbind, lapply( e, function(x){ getElement(x,'q') <= q_value_threshold } ) ), 1, any )
   m <- cbind( e[[1]][ , c('name', 'n.set' )],
               do.call( cbind, lapply( e, function(x){ getElement(x, display_type) } ) )
@@ -648,7 +653,8 @@ term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.
   class(m) <- c( 'term_enrichment_by_subset', class(m) )
   attr(m, 'display_type') <- display_type
   attr(m, 'phred') <- phred
-
+  
+  if(verbose){ cat("done.", sep="\n") }
   return( m )
 
 }
@@ -657,7 +663,7 @@ term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.
 
 #' plot.term_enrichment_by_subset
 #'
-#' @param m data frame returned by term_enrichment_by_subset
+#' @param x data frame returned by term_enrichment_by_subset
 #' @param show_values True or False, plot values on the heatmap
 #' @param annotation_matrix a matrix() of group-levle characteristics - same number of columns as "m"
 #' @param annotation_palates Color palates (RColorBrewer) used for each row of the annotation matrix
@@ -694,7 +700,7 @@ term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.
 #' plot( m, label_size_y = 4, show_values = FALSE )
 #' }
 #'
-plot.term_enrichment_by_subset <- function( m, show_values = TRUE,
+plot.term_enrichment_by_subset <- function( x, show_values = TRUE,
                                             annotation_matrix = NA,
                                             low = 'white', high="#2166AC",
                                             return_ggplot_object = FALSE,
@@ -705,35 +711,35 @@ plot.term_enrichment_by_subset <- function( m, show_values = TRUE,
                                             annotation_legend_x = -0.3, ... ){
 
   ## Check inputs
-  if ( all(is.na(m)|is.null(m)) || is.null(dim(m)) || (dim(m)[1] < 1) ){
+  if ( all(is.na(x)|is.null(x)) || is.null(dim(x)) || (dim(x)[1] < 1) ){
     stop(' insufficient data provided to plot.term_enrichment_by_subset()')
   }
-  display_type <- attr(m, 'display_type')
-  phred <- attr(m, 'phred')
+  display_type <- attr(x, 'display_type')
+  phred <- attr(x, 'phred')
 
   if ( (!all(is.na(annotation_matrix))) &&
-       ((dim(m)[2] - dim(annotation_matrix)[2]) != 2 ) ){
+       ((dim(x)[2] - dim(annotation_matrix)[2]) != 2 ) ){
     stop(sprintf('You have requested to add an annotation matrix, but the dimentions do not line up.\nExpected: %d',
-                 dim(m)[2]-2, dim(annotation_matrix)[2] ))
+                 dim(x)[2]-2, dim(annotation_matrix)[2] ))
   }
 
   ## Optionally, cap the values for plotting
   if ( (!all(is.na(cap))) & (class(cap) == 'numeric') ){
     if (length(cap) > 1){ stop('"cap" should be a single number') }
-    m[, 3:dim(m)[2] ] <- apply( m[, 3:dim(m)[2] ], c(1,2), function(x){
-      if (x > cap){ return(cap)
-      } else {      return(x)
+    x[, 3:dim(x)[2] ] <- apply( x[, 3:dim(x)[2] ], c(1,2), function(y){
+      if (y > cap){ return(cap)
+      } else {      return(y)
       }
     })
   }
 
   ## make matrix with row/column names
-  mat <- as.matrix( m[ , 3:dim(m)[2] ] )
-  colnames(mat) <- colnames(m)[ 3:dim(m)[2] ]
+  mat <- as.matrix( x[ , 3:dim(x)[2] ] )
+  colnames(mat) <- colnames(x)[ 3:dim(x)[2] ]
 
   ## trim off the "resource" from term names for plotting
   rownames(mat) <- as.character(sapply(
-    getElement( m, 'name' ), function(x){
+    getElement( x, 'name' ), function(x){
       sub( '.+[.]', '', x )
     }))
 
@@ -767,7 +773,7 @@ plot.term_enrichment_by_subset <- function( m, show_values = TRUE,
   g <- ggplot( dat, aes(Var2,Var1)) +
     geom_tile( aes_string(fill = 'value' ), colour=grid_line_color )
   if (show_values){
-     g <- g + geom_text( aes_string(fill = 'value' ), label = round(dat$value, 1) )
+     g <- g + geom_text( label = round(dat$value, 1) ) # aes_string(fill = 'value' )
   }
   g <- g + scale_fill_gradient2(midpoint=mid, low=low, high=high)
   g <- g + theme( axis.ticks = element_blank(),
@@ -825,11 +831,11 @@ Please modify your annotation_matrix to have up to 8 values per row.')
     ggmat <- ggplot( dat, aes(Var2,Var1)) +
       geom_tile( aes_string(fill = 'colID' ), colour=grid_line_color ) +
       scale_fill_manual( values = uc, labels = ul ) +
-      theme( axis.ticks = element_blank(), axis.text.x = element_blank(),
+      theme( axis.ticks = element_blank(),
              axis.text.y = element_blank(),
-             axis.text.x = element_text(size = 8, angle = -45),
+             axis.text.x = element_text(size = 8, angle = -45, hjust = 0),
              panel.background = element_blank(),
-             legend.margin = unit(0, "cm"), legend.text = element_text(size=rel(0.5)),
+             legend.spacing = unit(0, "cm"), legend.text = element_text(size=rel(0.5)),
              title = element_blank(), legend.key.size = unit(.3,'cm'),
              legend.position = c(annotation_legend_x, 0.5)
       ) + xlab('') + ylab('')
@@ -838,14 +844,14 @@ Please modify your annotation_matrix to have up to 8 values per row.')
     p1 <- ggplotGrob(g)
     p2 <- ggplotGrob(ggmat)
     p2$widths <- p1$widths
-    g <- arrangeGrob( p2, p1, heights = c(1,4), ncol=1 )
+    g <- gridExtra::arrangeGrob( p2, p1, heights = c(1,4), ncol=1 )
     
     ## Return or Plot
     if (return_ggplot_object){
       #g <- arrangeGrob( p2, p1, layout_matrix = matrix(c(1, rep(2,4) ), ncol=1) )
       return(g)
     } else {
-      print(g)
+      plot(g)
     }
 
   } else {
@@ -864,7 +870,7 @@ Please modify your annotation_matrix to have up to 8 values per row.')
 
 #' summary.term_enrichment
 #'
-#' @param x data frame returned by term_enrichment()
+#' @param object data frame returned by term_enrichment()
 #' @param ... Further arguments are passed on to head()
 #' 
 #' @return the data.frame of top enrichment results
@@ -875,14 +881,14 @@ Please modify your annotation_matrix to have up to 8 values per row.')
 #' e <- term_enrichment( vac1.day0vs31.de.genes, "MSigDB_Hallmarks" )
 #' summary(e, n=3)
 #' 
-summary.term_enrichment <- function(x, ...){
+summary.term_enrichment <- function(object, ...){
   
   if ( 'list' %in% class(e) ){
-    lapply( x, function(y){
+    lapply( object, function(y){
       print(head(y[,-5], ...))
     })
   } else {
-    print(head(x[,-5], ...))
+    print(head(object[,-5], ...))
   }
   
 }
@@ -890,7 +896,7 @@ summary.term_enrichment <- function(x, ...){
 
 #' summary.term_enrichment_by_subset
 #'
-#' @param x data frame returned by term_enrichment_by_subset()
+#' @param object data frame returned by term_enrichment_by_subset()
 #' @param verbose if TRUE (default), print a header describing the data type
 #' @param ... Further arguments are passed on to head()
 #' 
@@ -904,7 +910,7 @@ summary.term_enrichment <- function(x, ...){
 #' e <- term_enrichment_by_subset(vac1.de.genes, "MSigDB_Hallmarks", q_value_threshold = 0.1 )
 #' summary(e)
 #'
-summary.term_enrichment_by_subset <- function(x, verbose = TRUE, ...){
+summary.term_enrichment_by_subset <- function(object, verbose = TRUE, ...){
   
   if (verbose){
     # attributes(e)

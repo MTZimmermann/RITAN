@@ -4,10 +4,10 @@
 \alias{summary.term_enrichment}
 \title{summary.term_enrichment}
 \usage{
-\method{summary}{term_enrichment}(x, ...)
+\method{summary}{term_enrichment}(object, ...)
 }
 \arguments{
-\item{x}{data frame returned by term_enrichment()}
+\item{object}{data frame returned by term_enrichment()}
 
 \item{...}{Further arguments are passed on to head()}
 }
