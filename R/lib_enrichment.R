@@ -495,8 +495,9 @@ geneset.overlap <- function( s1, s2 = s1, threshold = 0.5, verbose = TRUE,
 #'
 #' @param geneset vector of gene symbols to be evaluated
 #' @param term_sources list containing the reference gene sets to test for enrichment
-#' @param verbose print the top results for each annotation resource
 #' @param report_resources_separately logical (default FALSE) flag to report enrichments seperately for each requested resource, or to combine them and produce FDR adjustment across the combined set
+#' @param verbose print the top results for each annotation resource
+#' @param all_symbols the background/global set of gene symbols (study dependent; we provide all protien coding genes as a default)
 #' @param ... further arguments are passed on to enrichment_symbols()
 #' 
 #' @return results matrix of input gene list compared to active gene sets. Q value is calculated within each of the active gene sets.
@@ -517,7 +518,7 @@ geneset.overlap <- function( s1, s2 = s1, threshold = 0.5, verbose = TRUE,
 #' }
 term_enrichment <- function( geneset, term_sources = term_sources.default,
                              report_resources_separately = FALSE,
-                             verbose = TRUE, ... ){
+                             verbose = TRUE, all_symbols = NA, ... ){
   
   if ( (!exists('all_symbols')) || all(is.na(all_symbols)) ){
     all_symbols <- load_all_protein_coding_symbols()
@@ -883,7 +884,7 @@ Please modify your annotation_matrix to have up to 8 values per row.')
 #' 
 summary.term_enrichment <- function(object, ...){
   
-  if ( 'list' %in% class(e) ){
+  if ( 'list' %in% class(object) ){
     lapply( object, function(y){
       print(head(y[,-5], ...))
     })

@@ -14,14 +14,14 @@ RITAN is a R package intended for Rapid Integration of Term Annotation and Netwo
 
 For a general introduction to the package, please see the "enrichment" vignette.
 
-```{r load_data from package, echo=TRUE, results='hide'}
+```{r load_data from package, echo=TRUE, results='hide', message=FALSE}
 library(RITANdata)
 library(RITAN)
+require(knitr)
 ```
 
 The R object, *network_list*, contains `r length(network_list)` human network-biology resources. Additionally, RITAN leverages existing R packages to access data from HPRD, BioGRID, and STRING. Citation information for each resource can be accessed via attr():
 ```{r citation, echo=TRUE}
-require(knitr)
 kable( attr(network_list, 'network_data_sources') )
 ```
 
@@ -266,8 +266,8 @@ Between the two RITAN vignettes, you've seen how to use RITAN to perform term en
 ```{r example7, echo=TRUE, eval=TRUE }
 net <- network_overlap( 'FOXP3', include_neighbors = TRUE, Net2Use = c("PID","dPPI","CCSB" ) )
 genes <- unique(c( net$p1, net$p2 ))
-e1 <- term_enrichment( genes, "Blood_Translaiton_Modules", verbose=FALSE )
+e1 <- term_enrichment( genes, "Blood_Translaiton_Modules", verbose=FALSE, all_symbols = cached_coding_genes )
 summary(e1)
-e2 <- term_enrichment( genes, "ReactomePathways", verbose=FALSE )
+e2 <- term_enrichment( genes, "ReactomePathways", verbose=FALSE, all_symbols = cached_coding_genes )
 summary(e2)
 ```

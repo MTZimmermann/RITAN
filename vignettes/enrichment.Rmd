@@ -17,15 +17,24 @@ The prevalence of gene expression analysis has led to the common outcome: Resear
 
 Our process of rapidly leveraging a comprehensive set of functional annotations begins from a list of prioritized genes.  RITAN is distributed with example genesets indexed by MSigDB. For this example we chose a study of influenza response under multiple conditions. In this vignette we will demonstrate analysis across multiple annotation resources. This can be achieved in one function call as exemplified in the following "quick start" example of RITAN's annotation capabilities. 
 
-```{r first_load, echo=TRUE, warning=FALSE}
+```{r first_load, echo=TRUE, warning=FALSE, message=FALSE}
 library(RITANdata)
 library(RITAN)
 ```
 
 Users may use RITAN to query multiple annotation resources simultaneously, and performing FDR-adjustment across the combined set:
 ```{r quick_start, echo=TRUE, warning=FALSE}
+# We define a query using gene symbols
 my_genes <- c('ABCA2','ACAT2','ACSS2','CD9','CPEB2','CTNNB1','FASN','LDLR','LPL','LSS')
-e <- term_enrichment(my_genes)
+
+# Now, you can rapidly get enrichment results by:
+# e <- term_enrichment(my_genes)
+
+# However, we will make two simplifications here, for expediency.
+#  1) only look at two resources (of the many available)
+#  2) use a cached background gene list of human protien coding genes
+resources <- c("ReactomePathways", "MSigDB_Hallmarks")
+e <- term_enrichment(my_genes, term_sources = resources, all_symbols = cached_coding_genes)
 summary(e)
 ```
 
@@ -63,8 +72,8 @@ The function term_enrichment_by_subset() uses these annotation resources to eval
 
 ```{r apply_enrichment_to_selection, echo=TRUE }
 e <- term_enrichment_by_subset( study_set, q_value_threshold = 1e-5, 
-                                term_sources = c("KEGG_filtered_canonical_pathways",
-                                                 "MSigDB_Hallmarks") )
+                                term_sources = resources,
+                                all_symbols = cached_coding_genes )
 ```
 
 You can see that between these two resources, 188 pathways were tested for enrichment by RITAN. We identify the representation (or enrichment) of each, across the input study sets. After performing false discovery adjustment across the group, we save the significant associations (in this case, q < 10^-5^).
@@ -114,8 +123,8 @@ While enrichment accounts for the size of each geneset and the number of genes s
 
 ```{r apply_enrichment_to_selection_n, echo=TRUE }
 n <- term_enrichment_by_subset( study_set, q_value_threshold = 1e-5,
-                                term_sources = c("KEGG_filtered_canonical_pathways",
-                                                 "MSigDB_Hallmarks"),
+                                term_sources = resources,
+                                all_symbols = cached_coding_genes,
                                 display_type = 'n', phred = FALSE )
 ```
 ```{r apply_enrichment_to_selection_n_plot, echo=TRUE, fig.width = 7, fig.height = 6 }
