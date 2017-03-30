@@ -1,16 +1,16 @@
 Package: RITAN
 Type: Package
 Title: Rapid Integration of Term Annotation and Network resources
-Version: 0.99.1
+Version: 0.99.2
 Author: Michael Zimmermann
 Maintainer: Michael Zimmermann <zimmermann.michael@mayo.edu>
 Description: Tools for comprehensive gene set enrichment and extraction of
     multi-resource high confidence subnetworks.
 LazyData: TRUE
-Depends: R (>= 3.3), ProNet
+Depends: R (>= 3.4), ProNet
 Imports: grid, gridExtra, reshape2, gplots, ggplot2, plotrix,
         RColorBrewer, STRINGdb, MCL, linkcomm, hash, png, sqldf,
-        igraph, RITANdata
+        igraph, knitr, RITANdata
 VignetteBuilder: knitr
 Collate: 'lib_enrichment.R' 'lib_network.R'
         'interconnectivity_functions.R'
