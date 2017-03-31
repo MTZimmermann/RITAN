@@ -27,4 +27,3 @@ e <- term_enrichment_by_subset(vac1.de.genes, "MSigDB_Hallmarks", q_value_thresh
 summary(e)
 
 }
-

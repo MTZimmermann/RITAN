@@ -52,4 +52,3 @@ print(names(geneset_list))
 load_geneset_symbols(gmt="myFile.gmt")
 }
 }
-

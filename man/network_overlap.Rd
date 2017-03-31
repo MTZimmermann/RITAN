@@ -56,4 +56,3 @@ print(sif)
 sif <- network_overlap( myGeneSet, c('dPPI','HPRD','CCSB','STRING'), minStringScore = 500 )
 }
 }
-

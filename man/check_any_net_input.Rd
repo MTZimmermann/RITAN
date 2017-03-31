@@ -24,4 +24,3 @@ myGeneSet <- c('BRCA1','RAD51C','VAV1','HRAS','ABCC1','CYP1B1','CYP3A5')
 yorn <- check_any_net_input( myGeneSet )
 print(yorn)
 }
-

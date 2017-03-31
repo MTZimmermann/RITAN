@@ -23,4 +23,3 @@ Created for future use and simplification of writing .gmt files from the package
 writeGMT()
 
 }
-

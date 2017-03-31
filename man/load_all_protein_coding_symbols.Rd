@@ -19,4 +19,3 @@ A unique list of gene symbols from the current protein coding set at the EBI
 \description{
 The character array returned is, by default, all human protein coding gene symbols. This variable defines the "universe of possible genes" for use in enrichment. Users should load a different "universe" or filter this one down to the most appropriate setting for their current study. For example, if running RNA-Seq, genes are in the universie if they are detected in any sample.
 }
-

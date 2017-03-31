@@ -37,4 +37,3 @@ print(yorn)
 
 ## See check_any_net_input() for efficiently checking across all resources.
 }
-

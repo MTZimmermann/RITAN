@@ -19,4 +19,3 @@ Created for simplification of reading .gmt files into RITAN.
 readGMT()
 
 }
-

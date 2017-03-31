@@ -47,4 +47,3 @@ plot( m, label_size_y = 4, show_values = FALSE )
 }
 
 }
-

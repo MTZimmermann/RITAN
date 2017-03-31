@@ -5,7 +5,8 @@
 \title{term_enrichment}
 \usage{
 term_enrichment(geneset, term_sources = term_sources.default,
-  report_resources_separately = FALSE, verbose = TRUE, ...)
+  report_resources_separately = FALSE, verbose = TRUE, all_symbols = NA,
+  ...)
 }
 \arguments{
 \item{geneset}{vector of gene symbols to be evaluated}
@@ -15,6 +16,8 @@ term_enrichment(geneset, term_sources = term_sources.default,
 \item{report_resources_separately}{logical (default FALSE) flag to report enrichments seperately for each requested resource, or to combine them and produce FDR adjustment across the combined set}
 
 \item{verbose}{print the top results for each annotation resource}
+
+\item{all_symbols}{the background/global set of gene symbols (study dependent; we provide all protien coding genes as a default)}
 
 \item{...}{further arguments are passed on to enrichment_symbols()}
 }
@@ -37,4 +40,3 @@ term_enrichment(geneset = vac1.day0vs31.de.genes, term_sources = "MSigDB_Hallmar
 vac1.day0v31.enrichment <- term_enrichment(geneset = vac1.day0vs31.de.genes, verbose = FALSE)
 }
 }
-

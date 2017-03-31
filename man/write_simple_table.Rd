@@ -24,4 +24,3 @@ This is a simple wrapper around "write.table" that writes a tab-delimited table 
 simple wrapper around write.table for writing a tab-delimieted, no row names, tab-seperated file
 }
 }
-

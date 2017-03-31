@@ -44,4 +44,3 @@ readSIF()
 sif <- readSIF("myFile.sif")
 }
 }
-

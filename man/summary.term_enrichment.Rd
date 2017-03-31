@@ -23,4 +23,3 @@ e <- term_enrichment( vac1.day0vs31.de.genes, "MSigDB_Hallmarks" )
 summary(e, n=3)
 
 }
-
