@@ -1,5 +1,7 @@
 ---
 title: "Enrichment Vignette"
+author: "Michael T. Zimmermann"
+date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{Enrichment Vignette}
@@ -17,7 +19,7 @@ The prevalence of gene expression analysis has led to the common outcome: Resear
 
 Our process of rapidly leveraging a comprehensive set of functional annotations begins from a list of prioritized genes.  RITAN is distributed with example genesets indexed by MSigDB. For this example we chose a study of influenza response under multiple conditions. In this vignette we will demonstrate analysis across multiple annotation resources. This can be achieved in one function call as exemplified in the following "quick start" example of RITAN's annotation capabilities. 
 
-```{r first_load, echo=TRUE, warning=FALSE, message=FALSE}
+```{r first_load, echo=TRUE, warning=FALSE, results='hide', message=FALSE}
 library(RITANdata)
 library(RITAN)
 ```
