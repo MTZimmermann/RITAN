@@ -60,7 +60,7 @@ readSIF <- function( file = NA, header = FALSE, sep="\t", as.is=TRUE,
   if(all(is.na(file))){
     
     stop('Please provide a valid file:
-         readSIF("myfile") where myfile is a tab-delimited file with 3 columns. Each row of the file describes an edge in a network. The first and third columns are genes/proteins/etc and the second column describes the interaction type. The optional fourth column contains a score or weight for the edge.')
+         readSIF("myfile") where myfile is a tab-delimited file with 3 columns. Each row of the file describes an edge in a network. By default, the first and second columns are genes/proteins/etc and the third column describes the interaction type. The optional fourth column contains a score or weight for the edge.')
     return(invisible(NULL))
     
   }
