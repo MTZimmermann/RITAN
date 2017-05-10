@@ -45,16 +45,24 @@ write_simple_table <- function(d=NULL,f=NULL,...){
 #' @export
 #'
 #' @examples
-#' readSIF()
+#' # Make a simple example to show the SIF file format
+#' s <- matrix(c('gene1','gene2','PPI',
+#'               'gene1','gene3','Chip-Seq',
+#'               'gene4','gene5','PPI'), ncol=3, byrow=TRUE)
 #' \dontrun{
+#' # Read a SIF file
+#' write.table( s, "myFile.sif", sep='\t', col.names=FALSE, row.names=FALSE )
 #' sif <- readSIF("myFile.sif")
 #' }
 readSIF <- function( file = NA, header = FALSE, sep="\t", as.is=TRUE,
          p1=1, p2=2, et=3, score=NA, ... ){
   
   if(all(is.na(file))){
-    print(sprintf('readSIF("myfile") where myfile is a tab-delimited file with 3 columns. Each row of the file describes an edge in a network. The first and third columns are genes/proteins/etc and the second column describes the interaction type. The optional fourth column contains a score or weight for the edge.'))
+    
+    stop('Please provide a valid file:
+         readSIF("myfile") where myfile is a tab-delimited file with 3 columns. Each row of the file describes an edge in a network. The first and third columns are genes/proteins/etc and the second column describes the interaction type. The optional fourth column contains a score or weight for the edge.')
     return(invisible(NULL))
+    
   }
   
   tmp <- read.table( file, header=header, sep=sep, as.is=as.is, ... )
@@ -68,7 +76,6 @@ readSIF <- function( file = NA, header = FALSE, sep="\t", as.is=TRUE,
   return(sif)
 
 }
-
 #' check_net_input
 #'
 #'A Quality Control function. This function will compare an input list of genes to a network reference and report if each member of the input is present in the resource.

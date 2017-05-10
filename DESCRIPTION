@@ -5,12 +5,16 @@ Version: 0.99.4
 Author: Michael Zimmermann
 Maintainer: Michael Zimmermann <zimmermann.michael@mayo.edu>
 Description: Tools for comprehensive gene set enrichment and extraction of
-    multi-resource high confidence subnetworks.
+    multi-resource high confidence subnetworks. RITAN facilitates bioinformatic
+    tasks for enabling network biology research.
 LazyData: TRUE
 Depends:
     R (>= 3.4),
     ProNet
 Imports:
+    graphics,
+    stats,
+    utils,
     grid,
     gridExtra,
     reshape2,

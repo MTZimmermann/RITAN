@@ -1,10 +1,10 @@
 ---
-title: "Induced Subnetwork Vignette"
+title: "Network Biology (Induced Subnetwork) Vignette"
 author: "Michael T. Zimmermann"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette Title}
+  %\VignetteIndexEntry{Network Biology Vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -259,9 +259,9 @@ From comparison of the above results, there are noticeable differences between u
 
 #Example 7 - Putting it All Together
 
-If in the course of analysis, your data points to one (or a few) gene(s) of interest, RITAN's two primary functions can be used together in order to gain stronger insights into the functional role of the identified gene(s).
+**RITAN's two primary functions can be used together in order to gain stronger insights into the functional role of the identified gene(s).**
 
-Between the two RITAN vignettes, you've seen how to use RITAN to perform term enrichment and to generate subnetworks leveraging multiple data sources. In the following example, we will start from a single gene of interest, gather the genes that it is known to physically interact with (protein-protein), and then perform enrichment analysis on group of genes.
+Between the two RITAN vignettes, you've seen how to use RITAN to perform term enrichment and to generate subnetworks leveraging multiple data sources. In the following example, we will start from a single gene of interest, gather the genes that it is known to physically interact with (protein-protein interaction; PPI), and then perform enrichment analysis on group of interacting genes/proteins.
 
 ```{r example7, echo=TRUE, eval=TRUE }
 net <- network_overlap( 'FOXP3', include_neighbors = TRUE, Net2Use = c("PID","dPPI","CCSB" ) )
@@ -271,3 +271,6 @@ summary(e1)
 e2 <- term_enrichment( genes, "ReactomePathways", verbose=FALSE, all_symbols = cached_coding_genes )
 summary(e2)
 ```
+
+Thus, starting from only one gene of interest, we identified 9 additional physically interacting genes. These genes are known to be co-regulated in a Blood-Translation-Module associated with T-cell signaling. Additionally, they are significantly associated with four Reactome pathways including AP-1 and MAPK signaling
+

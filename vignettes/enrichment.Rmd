@@ -241,7 +241,9 @@ e <- term_enrichment( gs, term_sources = c('GO','LDL') )
 
 
 
-# Examples
+# Additional Functions
+The following functions are used internally by other functions in RITAN. Brief notes about their default behavior will be printed to the console when they are called. We recommend defining the resources you'd like to use, etc, from each main function call (e.g. term_enrichment). However, if you would like to call them individually, consider the following examples:
+
 ### load_geneset_symbols
 
 load_geneset_symbols allows for the use of annotation resource(s) different from, or in addition to, the resources that ship with RITAN. The result of calling this function is to set the variable "active_genesets" which will be used by further functions. The default list contains 17724 gene sets from across four annotation resources: GO, ReactomePathways, KEGG_filtered_canonical_pathways, and MSigDB_Hallmarks. The output message tells the user how many gene sets are included in the chosen/selected resources. This message can be suppressed using the verbose=FALSE option.

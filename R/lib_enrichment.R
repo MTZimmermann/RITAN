@@ -9,8 +9,11 @@ term_sources.default = c("GO", "ReactomePathways", "KEGG_filtered_canonical_path
 
 #' This dataset is included as an example in the package:
 #' 
-#'  data("vac1.day0vs31.de.genes")
+#' @examples
+#' \dontrun{
+#'  #data("vac1.day0vs31.de.genes")
 #'  te <- term_enrichment(geneset = vac1.day0vs31.de.genes)
+#' }
 #' 
 #' @return differentially expressed genes at 31 days post-vaccination with vaccine1
 #' @references \url{https://www.ncbi.nlm.nih.gov/pubmed/26755593}
@@ -18,8 +21,11 @@ term_sources.default = c("GO", "ReactomePathways", "KEGG_filtered_canonical_path
 
 #' This dataset is included as an example in the package:
 #' 
-#'  data("vac1.day0vs56.de.genes")
+#' @examples
+#' \dontrun{
+#'  #data("vac1.day0vs56.de.genes")
 #'  te <- term_enrichment(geneset = vac1.day0vs56.de.genes)
+#' }
 #' 
 #' @return differentially expressed genes at 56 days post-vaccination with vaccine1
 #' @references \url{https://www.ncbi.nlm.nih.gov/pubmed/26755593}
@@ -27,8 +33,11 @@ term_sources.default = c("GO", "ReactomePathways", "KEGG_filtered_canonical_path
 
 #' This dataset is included as an example in the package:
 #' 
-#'  data("vac2.day0vs31.de.genes")
+#' @examples
+#' \dontrun{
+#'  #data("vac2.day0vs31.de.genes")
 #'  te <- term_enrichment(geneset = vac2.day0vs31.de.genes)
+#' }
 #' 
 #' @return differentially expressed genes at 31 days post-vaccination with vaccine2
 #' @references \url{https://www.ncbi.nlm.nih.gov/pubmed/26755593}
@@ -36,8 +45,11 @@ term_sources.default = c("GO", "ReactomePathways", "KEGG_filtered_canonical_path
 
 #' This dataset is included as an example in the package:
 #' 
-#'  data("vac2.day0vs56.de.genes")
+#' @examples
+#' \dontrun{
+#'  #data("vac2.day0vs56.de.genes")
 #'  te <- term_enrichment(geneset = vac2.day0vs56.de.genes)
+#' }
 #' 
 #' @return differentially expressed genes at 56 days post-vaccination with vaccine2
 #' @references \url{https://www.ncbi.nlm.nih.gov/pubmed/26755593}
@@ -56,12 +68,24 @@ term_sources.default = c("GO", "ReactomePathways", "KEGG_filtered_canonical_path
 #' @export
 #'
 #' @examples
-#' readGMT()
+#' # Make an example list() to show the GMT format
+#' set <- list( term1=c('gene_name1','gene_name2'),
+#'              term2=c('gene_name3','gene_name4','gene_name5') )
+#' \dontrun{
+#' # Write a GMT file for "set"
+#' writeGMT( set, 'my_file.gmt' )
+#' 
+#' # Reading GMT files
+#' geneset <- readGMT( 'my_file.gmt' )
+#' 
+#' # GMT files are available from multiple sources including http://software.broadinstitute.org/gsea/msigdb/
+#' }
 #' 
 readGMT <- function( f = NA ){
   
   if(all(is.na(f))){
-    print(sprintf('readGMT("myfile") where myfile is a tab-delimited file. Each row of the file describes a geneset. The first column is the name of the geneset. The second is the source for the geneset. Each further column lists genes within the geneset.'))
+    stop('Please provide an input file:
+         readGMT("myfile") where myfile is a tab-delimited file. Each row of the file describes a geneset. The first column is the name of the geneset. The second is the source for the geneset. Each further column lists genes within the geneset.')
     return(invisible(NULL))
   }
   
@@ -87,12 +111,18 @@ readGMT <- function( f = NA ){
 #' @export
 #' 
 #' @examples
-#' writeGMT()
-#' 
+#' # Make an example list() to show the GMT format
+#' set <- list( term1=c('gene_name1','gene_name2'),
+#'              term2=c('gene_name3','gene_name4','gene_name5') )
+#' \dontrun{
+#' # Write a GMT file for "set"
+#' writeGMT( set, 'my_file.gmt')
+#' }
 writeGMT <- function( s, file = NA, link=rep('', length(s)) ){
   
   if(all(is.na(file))){
-    print(sprintf('writeGMT(geneset_def, "myfile") where "geneset_def" is an object of list class that describes which genes are contained in a list of genesets.'))
+    stop('Please provide data and a file name:
+         writeGMT(geneset_def, "myfile") where "geneset_def" is an object of list class that describes which genes are contained in a list of genesets.')
     return(invisible(NULL))
   }
   
