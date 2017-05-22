@@ -37,7 +37,7 @@ write_simple_table <- function(d=NULL,f=NULL,...){
 #' @param as.is logical (default TRUE)
 #' @param p1 Column number for the 1st entity. Default = 1.
 #' @param p2 Column number for the 2nd entity. Default = 2.
-#' @param et Column number for the edge type. Default = 3.
+#' @param et Column number for the edge type. Default = 3. Optionally, it may be a string label to be used as the edge type for all interactions from the input file.
 #' @param score Column number for edge scores or weights. Default = NA (no score read).
 #' @param ... Other options to read.table().
 #'
@@ -57,7 +57,7 @@ write_simple_table <- function(d=NULL,f=NULL,...){
 readSIF <- function( file = NA, header = FALSE, sep="\t", as.is=TRUE,
          p1=1, p2=2, et=3, score=NA, ... ){
   
-  if(all(is.na(file))){
+  if (all(is.na(file))){
     
     stop('Please provide a valid file:
          readSIF("myfile") where myfile is a tab-delimited file with 3 columns. Each row of the file describes an edge in a network. By default, the first and second columns are genes/proteins/etc and the third column describes the interaction type. The optional fourth column contains a score or weight for the edge.')
@@ -65,9 +65,13 @@ readSIF <- function( file = NA, header = FALSE, sep="\t", as.is=TRUE,
     
   }
   
+  if ( (!(class(et) %in% c('character','numeric'))) || any(is.na(et)) || (length(et) != 1) ){
+    stop('The edge type "et" must be a column number or string label. If a string label, all edges from the indicated file will have edge type "et."')
+  }
+  
   tmp <- read.table( file, header=header, sep=sep, as.is=as.is, ... )
   sif <- data.frame( p1 = tmp[,p1],
-                     edge_type = tmp[,et],
+                     edge_type = ifelse( is.numeric(et), tmp[,et], et ),
                      p2 = tmp[,p2] )
   if (!all(is.na(score))){
     sif$score <- tmp[,score]
