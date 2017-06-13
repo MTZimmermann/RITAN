@@ -691,6 +691,56 @@ term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.
 }
 
 
+#' plot.term_enrichment
+#' @param x data frame returned by term_enrichment
+#' @param min_q Only q-values more significant than this threshold will be plotted
+#' @param max_terms Up to max_terms will be plotted
+#' @return silent return from plot
+#' @export
+#' @examples
+#' 
+#' e <- term_enrichment(vac1.day0vs31.de.genes, term_sources = 'GO_slim_generic')
+#' summary(e)
+#' plot(e, min_q = .1)
+#'
+plot.term_enrichment <- function( x=NA, min_q = 0.05, max_terms = 25, extend_mar = c(0,10,0,0), ... ){
+  
+  if ( is.null(dim(x)) || all(is.na(x)) ){
+    stop('input data for plotting not found')
+  }
+  
+  if (max_terms > dim(x)[1]){
+    max_terms <- dim(x)[1]
+  }
+  
+  i <- (x$q < min_q)
+  if (!any(i)){
+    stop('No terms meet the requested min_q threshold')
+  }
+  
+  if ( length(extend_mar==4) & (par()$mar[2] < extend_mar[2]) ){
+    ## The term labels can be long strings.
+    ## Extent the left-hand-side margins.
+    par( mar = par()$mar + extend_mar )
+  }
+  
+  if (sum(i) > max_terms){
+    i <- rep(FALSE, dim(x)[1])
+    i[ which(x$q < min_q)[ 1:max_terms] ] <- TRUE
+  }
+  
+  plot( -log10(x$q[i]), which(i),
+        xlab = expression(paste('-log'[10], '( q-value )')),
+        ylab = '', yaxt='n', ... )
+  
+  axis( side = 2, at = which(i), labels = rep('', sum(i)) )
+  
+  text( par()$usr[1] - 0.05*( par()$usr[2] - par()$usr[1] ), # x placement is 5% to the left of the x-axis starting
+        which(i), labels = sub( '.', '\n', x$name[i], fixed=TRUE ),
+        cex = 0.6, srt = 0, xpd=TRUE, adj=c(1.0,0.5) )
+  
+}
+
 
 #' plot.term_enrichment_by_subset
 #'

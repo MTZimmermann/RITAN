@@ -484,7 +484,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
                                      p2 = all.map$gene[m.t] ))
       
     } else {
-      warning('STRING was requested, but the required package STRINGdb was not found by requireNamespace...')
+      stop('STRING was requested, but the required package STRINGdb was not found by requireNamespace...')
     }
     
   }
@@ -511,7 +511,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
                                      edge_type = rep('HPRD', dim(i)[1] ),
                                      p2 = i[, 2] ))
     } else {
-      warning('HPRD was requested, but the required package ProNet was not found by requireNamespace...')
+      stop('HPRD was requested, but the required package ProNet was not found by requireNamespace...')
     }
     
   }
@@ -536,11 +536,11 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
       i <- get.edgelist(g.biog, names=TRUE)
       
       sif <- rbind( sif, data.frame( p1 = i[, 1],
-                                     edge_type = rep('HPRD', dim(i)[1] ),
+                                     edge_type = rep('Biogrid', dim(i)[1] ),
                                      p2 = i[, 2] ))
       
     } else {
-      warning('Biogrid was requested, but the required package ProNet was not found by requireNamespace...')
+      stop('Biogrid was requested, but the required package ProNet was not found by requireNamespace...')
     }
     
   }
@@ -598,15 +598,28 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
 
     ## collapse duplicate edges
     if (directed_net){
-      # unique and directed. **** Loss of "source" information here...
+      # unique and directed.
       tmp <- sif[,c(1,3)]
     } else {
       # need to sort genes within each row - this preserves row order too
       tmp <- t(apply( sif, 1, function(x){ sort(x[c(1,3)]) } ))
     }
+    
+    ## ignore "source" for detecting duplicates
     i <- duplicated(tmp)
+    
     if (any(i)){
+      
+      ## But, retain "source" labels in the output
+      to_remove <- unique(tmp[i,])
+      for ( j in 1:dim(to_remove)[1] ){
+        k <- ( (sif$p1 == to_remove[j,1]) & (sif$p2 == to_remove[j,2]) ) |
+             ( (sif$p1 == to_remove[j,2]) & (sif$p2 == to_remove[j,1]) )
+        sif$edge_type[ k & (!i) ] <- paste( sort(unique( sif$edge_type[ k ] )), sep=';', collapse=';' )
+      }
+      
       sif <- sif[ !i, ]
+      
     }
 
   }
