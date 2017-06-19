@@ -23,7 +23,7 @@ network_overlap(gene_list = NA, Net2Use = c("PID", "TFe", "dPPI", "HPRD",
 
 \item{verbose}{If TRUE (default), the function will update the user on what it is doing and how many edges are identified for each resource in Net2Use.}
 
-\item{dedup}{If TRUE (Default = FALSE),}
+\item{dedup}{If TRUE (Default = FALSE), remove edges reported by multiple resources. The edge type will be a semi-colon delimited list of the resources that had reported the interaction.}
 
 \item{directed_net}{Logical indicating if the network resources should be interpreted as directed.}
 

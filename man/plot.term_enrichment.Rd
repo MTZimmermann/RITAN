@@ -4,18 +4,17 @@
 \alias{plot.term_enrichment}
 \title{plot.term_enrichment}
 \usage{
-\method{plot}{term_enrichment}(x, min_q = 0.05, max_terms = 25, ...)
+\method{plot}{term_enrichment}(x = NA, min_q = 0.05, max_terms = 25,
+  extend_mar = c(0, 10, 0, 0), ...)
 }
 \arguments{
 \item{x}{data frame returned by term_enrichment}
 
-\item{min_q}{Only q-values more significant than this threshold will be plotted}
+\item{min_q}{Only q-values more significant than this threshold will be plotted. Default = 0.05.}
 
-\item{max_terms}{Up to max_terms will be plotted}
+\item{max_terms}{Up to max_terms will be plotted. Default = 25.}
 
-\item{extend_mar}{Extent plot margins since term names can be long strings}
-
-\item{...}{further areguments are sent to plot.}
+\item{extend_mar}{Term names can be long. We attempt to keep them readable by extending the left-hand-side margins automatically. Default = c(0,10,0,0) added to par()$mar.}
 }
 \value{
 silent return from plot
@@ -24,6 +23,7 @@ silent return from plot
 plot.term_enrichment
 }
 \examples{
+
 e <- term_enrichment(vac1.day0vs31.de.genes, term_sources = 'GO_slim_generic')
 summary(e)
 plot(e, min_q = .1)

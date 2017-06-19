@@ -693,17 +693,18 @@ term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.
 
 #' plot.term_enrichment
 #' @param x data frame returned by term_enrichment
-#' @param min_q Only q-values more significant than this threshold will be plotted
-#' @param max_terms Up to max_terms will be plotted
+#' @param min_q Only q-values more significant than this threshold will be plotted. Default = 0.05.
+#' @param max_terms Up to max_terms will be plotted. Default = 25.
+#' @param extend_mar Term names can be long. We attempt to keep them readable by extending the left-hand-side margins automatically. Default = c(0,10,0,0) added to par()$mar.
+#' @param ... Additional arguments are passed on to plot()
 #' @return silent return from plot
 #' @export
 #' @examples
 #' 
 #' e <- term_enrichment(vac1.day0vs31.de.genes, term_sources = 'GO_slim_generic')
-#' summary(e)
 #' plot(e, min_q = .1)
 #'
-plot.term_enrichment <- function( x=NA, min_q = 0.05, max_terms = 25, extend_mar = c(0,10,0,0), ... ){
+plot.term_enrichment <- function( x = NA, min_q = 0.05, max_terms = 25, extend_mar = c(0,10,0,0), ... ){
   
   if ( is.null(dim(x)) || all(is.na(x)) ){
     stop('input data for plotting not found')

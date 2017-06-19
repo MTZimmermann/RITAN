@@ -20,6 +20,11 @@ Nothing is returned. A file is written.
 Created for future use and simplification of writing .gmt files from the package.
 }
 \examples{
-writeGMT()
-
+# Make an example list() to show the GMT format
+set <- list( term1=c('gene_name1','gene_name2'),
+             term2=c('gene_name3','gene_name4','gene_name5') )
+\dontrun{
+# Write a GMT file for "set"
+writeGMT( set, 'my_file.gmt')
+}
 }

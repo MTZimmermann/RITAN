@@ -16,6 +16,17 @@ A list() where the name of each entry is the term (first column of GMT file) and
 Created for simplification of reading .gmt files into RITAN.
 }
 \examples{
-readGMT()
+# Make an example list() to show the GMT format
+set <- list( term1=c('gene_name1','gene_name2'),
+             term2=c('gene_name3','gene_name4','gene_name5') )
+\dontrun{
+# Write a GMT file for "set"
+writeGMT( set, 'my_file.gmt' )
+
+# Reading GMT files
+geneset <- readGMT( 'my_file.gmt' )
+
+# GMT files are available from multiple sources including http://software.broadinstitute.org/gsea/msigdb/
+}
 
 }

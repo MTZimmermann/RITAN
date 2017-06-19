@@ -20,7 +20,7 @@ readSIF(file = NA, header = FALSE, sep = "\\t", as.is = TRUE, p1 = 1,
 
 \item{p2}{Column number for the 2nd entity. Default = 2.}
 
-\item{et}{Column number for the edge type. Default = 3.}
+\item{et}{Column number for the edge type. Default = 3. Optionally, it may be a string label to be used as the edge type for all interactions from the input file.}
 
 \item{score}{Column number for edge scores or weights. Default = NA (no score read).}
 
@@ -39,8 +39,13 @@ The SIF file format is a 3-column format, with an optional 4th column:
 Entities may be genes, proteins, metabolites, etc. The edge type typically conveys the type of relationship that exists between the two entities, such as physical interaciton, phosphorylation, or activation.
 }
 \examples{
-readSIF()
+# Make a simple example to show the SIF file format
+s <- matrix(c('gene1','gene2','PPI',
+              'gene1','gene3','Chip-Seq',
+              'gene4','gene5','PPI'), ncol=3, byrow=TRUE)
 \dontrun{
+# Read a SIF file
+write.table( s, "myFile.sif", sep='\\t', col.names=FALSE, row.names=FALSE )
 sif <- readSIF("myFile.sif")
 }
 }

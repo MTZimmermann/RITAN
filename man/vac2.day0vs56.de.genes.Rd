@@ -12,8 +12,14 @@ vac2.day0vs56.de.genes
 differentially expressed genes at 56 days post-vaccination with vaccine2
 }
 \description{
-data("vac2.day0vs56.de.genes")
+This dataset is included as an example in the package:
+}
+\examples{
+\dontrun{
+ #data("vac2.day0vs56.de.genes")
  te <- term_enrichment(geneset = vac2.day0vs56.de.genes)
+}
+
 }
 \references{
 \url{https://www.ncbi.nlm.nih.gov/pubmed/26755593}
