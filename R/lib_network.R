@@ -70,9 +70,20 @@ readSIF <- function( file = NA, header = FALSE, sep="\t", as.is=TRUE,
   }
   
   tmp <- read.table( file, header=header, sep=sep, as.is=as.is, ... )
-  sif <- data.frame( p1 = tmp[,p1],
-                     edge_type = ifelse( is.numeric(et), tmp[,et], et ),
-                     p2 = tmp[,p2] )
+  if (is.numeric(et)){
+    
+    sif <- data.frame( p1 = tmp[,p1],
+                       edge_type = tmp[,et],
+                       p2 = tmp[,p2] )
+    
+  } else {
+    
+    sif <- data.frame( p1 = tmp[,p1],
+                       edge_type = et,
+                       p2 = tmp[,p2] )
+    
+  }
+  
   if (!all(is.na(score))){
     sif$score <- tmp[,score]
   }
@@ -270,7 +281,7 @@ check_any_net_input <- function(set, Net2Use = names(network_list) ){
 #' @param minHumanNetScore If HumanNet is among the Net2Use, only edges of at least the indicated score will be included. Default = 0.4.
 #' @param minScore Same as above, but used for any other networks where "score" is provided
 #' @param verbose If TRUE (default), the function will update the user on what it is doing and how many edges are identified for each resource in Net2Use.
-#' @param dedup If TRUE (Default = FALSE), 
+#' @param dedup If TRUE (Default = FALSE), remove edges reported by multiple resources. The edge type will be a semi-colon delimited list of the resources that had reported the interaction.
 #' @param directed_net Logical indicating if the network resources should be interpreted as directed. 
 #' @param include_neighbors Logical to include 1st neighbors of "gene_list" (genes not in gene_list, but directly connected to them) in the induced subnetwork.
 #' @param STRING_cache_directory A direcotry where STRING data files are cached to speed up subsequent queries; no need to re-download. If NA (the default), caches STRING data in your Rpackages directory. If "", uses a temporary directory that is cleared when the R-session closes.
@@ -368,6 +379,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   }
   
   ## -------------------------- -
+  ## Get all interactions for resources in "network_list"
   NetInList <- Net2Use[ Net2Use %in% names(network_list) ]
   sif <- data.frame( p1=character(0), edge_type=character(0), p2=character(0))
   sif <- do.call( rbind, lapply( NetInList , select_edges ) )
@@ -378,7 +390,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
     ## The first round is really to define which nodes/genes to consider.
     ## This second round will get all the edges within the full list.
     ## Without two rounds, we would just have "stars" around the input genes
-    ##   and we'd miss the edges between neighbors.
+    ##   and we'd miss the edges among neighbors.
     gene_list2 <- unique(c( gene_list, sif$p1, sif$p2 ))
     sif <- do.call( rbind, lapply( NetInList , function(x){
         select_edges(x, inc_nei = FALSE, gs = gene_list2 )
@@ -398,19 +410,19 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
     if (requireNamespace("STRINGdb", quietly = TRUE)) {
       
       map.input.to.STRING <- function( genes = NULL, s. = s, removeUnmappedRows = TRUE ){
-        
+
         if (class(genes) == 'character'){
           genes <- data.frame(gene = genes)
         } else if ( (class(genes) == 'data.frame') && ('gene' %in% names(genes)) ){
-          
+
         } else {
           stop('Input should be a character vector of gene names/ids or a data frame with a column named "gene"')
         }
-        
+
         mapped <- s.$map( genes, "gene", removeUnmappedRows = removeUnmappedRows )
-        
+
         return(mapped)
-        
+
       }
       
       if (all( is.na(STRING_cache_directory) )){
@@ -462,8 +474,9 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
         n <- unique(unlist(sapply( vertex.search, function(x){ s$get_neighbors(x) })))
         i <- s$get_interactions( unique(c(g,n)) )
         
-        tmp <- read.table( 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/locus_groups/protein-coding_gene.txt',
-                                 sep="\t", header=TRUE, as.is=TRUE, quote="", comment.char = '' )
+        # mapping_file <- 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/locus_groups/protein-coding_gene.txt'
+        mapping_file <- 'ftp://ftp.ebi.ac.uk/pub/databases/genenames/new/tsv/hgnc_complete_set.txt'
+        tmp <- read.table( mapping_file, sep="\t", header=TRUE, as.is=TRUE, quote="", comment.char = '' )
         all.genes <- unique( tmp[, 'symbol' ])
         all.map   <- map.input.to.STRING( genes = all.genes, s. = s )
         
@@ -474,14 +487,32 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
         
       }
       
-      m.t <- match( i$to  , all.map$STRING_id )
-      m.f <- match( i$from, all.map$STRING_id )
-      #all( i$from == input.genes.mapped$STRING_id[m.f] )
+      ## NOTE: Of the two METHODS below, #2 better utilizes BioConductor standards, but #1 mapped more ENSPs to gene symbols.
+      ##       Thus, I have kept using #1 for now... and its assumption that the user can read a public ftp://
       
-      sif <- rbind( sif, data.frame( p1 = all.map$gene[m.f],
+      ## -- METHOD 1 -- Translate output to symbol from current ensembl mapping
+      m.f <- match( i$from, all.map$STRING_id )
+      m.t <- match( i$to  , all.map$STRING_id )
+      i$from.symbol <- all.map$gene[m.f]
+      i$from.symbol[ is.na(i$from.symbol) ] <- i$from[ is.na(i$from.symbol) ]
+      i$to.symbol   <- all.map$gene[m.t]
+      i$to.symbol[   is.na(i$to.symbol  ) ] <- i$to[   is.na(i$to.symbol  ) ]
+      
+      ## -- METHOD 2 -- Get the mapping from ENSP to symbol
+      # i$from.symbol <- mapIds(hgu95av2.db,
+      #                         keys=as.character(sapply( i$from, function(x){ strsplit(x,'.',fixed=TRUE)[[1]][2]} )),
+      #                         column="SYMBOL", keytype="ENSEMBLPROT", multiVals="first")
+      # 
+      # i$to.symbol   <- mapIds(hgu95av2.db,
+      #                         keys=as.character(sapply( i$to,   function(x){ strsplit(x,'.',fixed=TRUE)[[1]][2]} )),
+      #                         column="SYMBOL", keytype="ENSEMBLPROT", multiVals="first")
+      
+      ## Add STRING interactions to the output
+      sif <- rbind( sif, data.frame( p1 = i$from.symbol,
                                      edge_type = sprintf('STRING%d',
                                                          round(i$combined_score/100)*100),
-                                     p2 = all.map$gene[m.t] ))
+                                     p2 = i$to.symbol
+                                     ))
       
     } else {
       stop('STRING was requested, but the required package STRINGdb was not found by requireNamespace...')
@@ -489,6 +520,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
     
   }
   
+  ## -------------------------- -
   ## Initiate loader for HPRD data
   if ('HPRD' %in% Net2Use){
     if (requireNamespace("ProNet", quietly = TRUE)) {
@@ -516,6 +548,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
     
   }
   
+  ## -------------------------- -
   ## Initiate loader for BioGrid data
   if ('Biogrid' %in% Net2Use){
     if (requireNamespace("ProNet", quietly = TRUE)) {
@@ -545,6 +578,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
     
   }
   
+  ## -------------------------- -
   ## Read in user-supplied SIF files (assumes SIF file format)
   if( any(file.exists(Net2Use)) ){
     
@@ -580,6 +614,13 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   }
   
   ## -------------------------- -
+  row_NA <- apply(sif,1,function(x){any(is.na(x))})
+  if (any(row_NA)){
+    warning(sprintf('\nWe have detected NAs in %d rows. These rows will be removed. They are most likely from ENSPs in STRING that do not map to a gene symbol... We are working to improve the mappings used to prevent these occurrences.\n', sum(row_NA)))
+    sif <- sif[ !row_NA, ]
+  }
+  
+  ## -------------------------- -
   if(dedup && (dim(sif)[1] > 0) ){
     
     if (verbose){
@@ -588,7 +629,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
 
     ## easiest reduction first: full duplicates
     sif <- unique(sif)
-
+    
     ## remove self loops
     ## NOTE: this can "remove" nodes from the network if the self-loop is the only edge they have
     i <- sif$p1 == sif$p2
@@ -601,7 +642,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
       # unique and directed.
       tmp <- sif[,c(1,3)]
     } else {
-      # need to sort genes within each row - this preserves row order too
+      # need to sort genes within each row - this operation preserves row order
       tmp <- t(apply( sif, 1, function(x){ sort(x[c(1,3)]) } ))
     }
     
@@ -623,7 +664,8 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
     }
 
   }
-
+  
+  
   if (verbose){
     n <- unlist(sif[,c(1,3)])
     if (!return_full_network){
