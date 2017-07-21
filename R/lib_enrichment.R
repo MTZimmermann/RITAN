@@ -995,10 +995,10 @@ summary.term_enrichment <- function(object, ...){
 summary.term_enrichment_by_subset <- function(object, verbose = TRUE, ...){
   
   if (verbose){
-    # attributes(e)
+    # attributes(object)
     
-    dt <- attr(e, 'display_type')
-    ph <- attr(e, 'phred')
+    dt <- attr(object, 'display_type')
+    ph <- attr(object, 'phred')
     
     if (dt == 'p'){
       
@@ -1022,7 +1022,7 @@ summary.term_enrichment_by_subset <- function(object, verbose = TRUE, ...){
     
   }
   
-  head(e, ...)
+  head(object, ...)
   
 }
 

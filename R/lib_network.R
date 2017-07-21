@@ -624,7 +624,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   if(dedup && (dim(sif)[1] > 0) ){
     
     if (verbose){
-      cat('Removing duplicate edges and self-loops...\n')
+      cat('\nRemoving duplicate edges and self-loops...\n')
     }
 
     ## easiest reduction first: full duplicates
