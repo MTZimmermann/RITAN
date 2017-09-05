@@ -483,35 +483,42 @@ term.test <- function( set, sub_set, total ){
 }
 
 ### --------------------------------------------------------------- -
-### Return assymetric matrix of the fraction of genes shared between sets.
-###   -->> r[i,j] <- sum( s[[i]] %in% s[[j]] ) / s.size[i]
-###   -->> r[i,j] == Fraction of i that is within j
-### If a second set is provided, == Fraction of "i"th set in "s1" covered by "j"th set in "s2"
-geneset.overlap <- function( s1, s2 = s1, threshold = 0.5, verbose = TRUE,
+#' geneset_overlap
+#' Return assymetric matrix of the fraction of genes shared between sets. E.G. The fraction of the first set that is "covered" by or "overlaps" the second set: sum( set1 %in% set2 ) / length(set1)
+#'
+#' @param s1 The first geneset
+#' @param s2 the second geneset
+#' @param s.size Default is to determint the lengths of "s1" elements
+#'
+#' @return results matrix of input gene list compared to active gene sets. Q value is calculated using entire group of active gene sets.
+#' @export
+#'
+#' @examples
+#' r <- geneset_overlap( geneset_list$MSigDB_Hallmarks, geneset_list$NetPath_Gene_regulation )
+#' heatmap(r, col = rev(gray(seq(0,1,length.out = 15))) )
+#' summary(c(r))
+geneset_overlap <- function( s1, s2 = s1, #threshold = 0.5,
                              s.size = unlist(lapply( s1, length )) ){
-
-    if (verbose){
-        tmp <- s.size
-        tmp[ tmp>500 ] <- 500
-        hist(tmp,100)
-    }
-
+    
     n <- length(s1)
     m <- length(s2)
     r <- array( 0, dim=c(n,m) )
     for (i in 1:n){
-
-        # if ( (i+1) < n ){
-        # for (j in (i+1):n ){
-        #     r[i,j] <- sum( s[[i]] %in% s[[j]] ) / length( s[[i]] )
-        # }}
 
         for (j in 1:m ){
             r[i,j] <- sum( s1[[i]] %in% s2[[j]] ) / s.size[i] #length( s[[i]] )
         }
 
     }
-
+    
+    if (!all(is.null(names(s1)))){
+      rownames(r) <- names(s1)
+    }
+    
+    if (!all(is.null(names(s2)))){
+      colnames(r) <- names(s2)
+    }
+    
     return(r)
 
 }
