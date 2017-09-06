@@ -675,7 +675,22 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
       cat(sprintf('Total network has %d nodes and %d edges.\n', length(unique(n)), dim(sif)[1] ))
     }
   }
-
+  
+  ## Add attributes to the output so that we can always check what was actually run.
+  attr(sif,'param') <- data.frame( 'Net2Use' = Net2Use,
+                                   'minStringScore' = minStringScore,
+                                   'minHumanNetScore' = minHumanNetScore,
+                                   'minScore' = minScore,
+                                   'dedup' = dedup,
+                                   'directed_net' = directed_net,
+                                   'include_neighbors' = include_neighbors,
+                                   'STRING_cache_directory' = STRING_cache_directory,
+                                   'STRING_species' = STRING_species,
+                                   'STRING_version' = STRING_version,
+                                   'ProNet_species' = ProNet_species
+                                   )
+  
+  ## done
   return(sif)
 
 }
