@@ -1,0 +1,36 @@
+---
+title: "Multi-Tissue Analysis"
+author: "Michael T. Zimmermann"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Enrichment Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+In this vignette, we will analyze a gene expression dataset with samples from multiple tissues. We will highlight:
+
+
+# Enrichment to Identify Tissue-Specific Changes
+
+```{r first_load, echo=TRUE, warning=FALSE, results='hide', message=FALSE}
+library(RITANdata)
+library(RITAN)
+```
+
+
+```{r geneset_overlap1, echo=TRUE, warning=FALSE, fig.width = 7, fig.height = 7, fig.align='center'}
+## TO DO
+```
+
+
+# Network Interactions Within Each Tissue
+
+to do...
+
+
+# Similarities and Differences Between Tissues
+
+to do...
+

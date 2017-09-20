@@ -1,0 +1,24 @@
+---
+title: "Choosing Resources"
+author: "Michael T. Zimmermann"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Enrichment Vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+RITAN indexes multiple resources and choosing which of them are most relevant for your study can be a challenge. To help with this process, we provide below a set of examples from different types of studies and the thinking behind which resources were used.
+
+# Example
+
+```{r first_load, echo=TRUE, warning=FALSE, results='hide', message=FALSE}
+library(RITANdata)
+library(RITAN)
+```
+
+
+```{r geneset_overlap1, echo=TRUE, warning=FALSE, fig.width = 7, fig.height = 7, fig.align='center'}
+## TO DO
+```
