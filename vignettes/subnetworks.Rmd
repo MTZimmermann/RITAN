@@ -43,13 +43,13 @@ my_genes <- geneset_list$MSigDB_C7[['GSE6269_HEALTHY_VS_FLU_INF_PBMC_DN']]
 net <- network_overlap( my_genes, Net2Use = 'HPRD' )
 ```
 
-We now have what is referred to as the "induced subnetwork" for *my_genes* using only one resoure, HPRD. The netwoek is the subset of interactions from HPRD that contains exclusively gene symbols within *my_genes*.
+We now have what is referred to as the "induced subnetwork" for *my_genes* using only one resoure, HPRD. The network is the subset of interactions from HPRD that contains exclusively gene symbols within *my_genes*.
 
 The input list contained `r length(unique(my_genes))` symbols and `r length(unique(c(net$p1,net$p2)))` were identified as having interactions within the network resources. Note: If very few genes have known connections between them, there may be a mismatch between your input format and the network resources - see the "Check Input" section below.
 
 There are `r dim(net)[1]` edges returned by this query with the first 5 shown for example:
 ```{r example1.1, echo=TRUE}
-net[ 1:5, ]
+head(unique(net))
 ```
 
 The output format is a data.frame with three columns: 
