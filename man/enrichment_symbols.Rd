@@ -18,19 +18,27 @@ in the GO, ReactomePathways, KEGG_filtered_canonical_pathways, and MSigDB_Hallma
 results matrix of input gene list compared to active gene sets. Q value is calculated using entire group of active gene sets.
 }
 \description{
-This function is called by term_enrichment() and term_enrichment_by_subset(). The user may call it directly in order to have q-values (similar to FDR adjusted p-values) calculated across multiple resources. The function utilizes the resources contained in the active_genesets vector. See load_geneset_symbols().
+This function is called by term_enrichment() and term_enrichment_by_subset(). The user may call it directly, but we suggest using term_enrichment(). The function uses the resources currently loaded into the active_genesets vector. See load_geneset_symbols().
 }
 \details{
-Outputs a data frame containing the gene set name, a hypergeometric p value, the number of genes from the
+Outputs a data frame containing the gene set name, a hypergeometric-test p value, the number of genes from the
 input gene list that occur in the gene set, the number of genes in the gene set, the gene symbols for
 the genes in the input gene list, and the q value.
 }
 \examples{
 require(RITANdata)
 myGeneSet <- c('BRCA1','RAD51C','VAV1','HRAS','ABCC1','CYP1B1','CYP3A5')
+
+\dontrun{
+## We suggest using term_enrichment() instead. E.g.:
+e <- enrichment_symbols(myGeneSet, 'GO')
+}
+
+## But, you may use enrichment_symbols() directly for an individual term:
 load_geneset_symbols('GO')
 e <- enrichment_symbols(myGeneSet, 'DNA_repair')
 print(e)
+
 \dontrun{
 ## Gene set enrichment using intersection of gene symbols 
 ##   provided in geneset parameter and all protein coding genes.

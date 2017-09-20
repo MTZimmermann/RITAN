@@ -24,9 +24,10 @@
 #' 
 #' @export
 #' 
-#' @example
-#' n1 = 
-#' icon_test( n1=n1, s=10)
+#' @examples
+#' \dontrun{
+#' icon_test( n1=n, s=10)
+#' }
 #' 
 icon_test <- function( n1 = NULL, n2 = NULL, s=100, verbose=TRUE, ... ){
   

@@ -15,6 +15,8 @@
 \item{max_terms}{Up to max_terms will be plotted. Default = 25.}
 
 \item{extend_mar}{Term names can be long. We attempt to keep them readable by extending the left-hand-side margins automatically. Default = c(0,10,0,0) added to par()$mar.}
+
+\item{...}{Additional arguments are passed on to plot()}
 }
 \value{
 silent return from plot
@@ -23,9 +25,7 @@ silent return from plot
 plot.term_enrichment
 }
 \examples{
-
 e <- term_enrichment(vac1.day0vs31.de.genes, term_sources = 'GO_slim_generic')
-summary(e)
 plot(e, min_q = .1)
 
 }

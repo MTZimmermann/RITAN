@@ -492,7 +492,7 @@ term.test <- function( set, sub_set, total ){
 
 ### --------------------------------------------------------------- -
 #' geneset_overlap
-#' Return assymetric matrix of the fraction of genes shared between sets. E.G. The fraction of the first set that is "covered" by or "overlaps" the second set: sum( set1 %in% set2 ) / length(set1)
+#' Return assymetric matrix of the fraction of genes shared between sets. E.G. The fraction of the first set that is "covered" by or "overlaps" the second set.
 #'
 #' @param s1 The first geneset
 #' @param s2 the second geneset
@@ -713,9 +713,9 @@ term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.
 #' @param extend_mar Term names can be long. We attempt to keep them readable by extending the left-hand-side margins automatically. Default = c(0,10,0,0) added to par()$mar.
 #' @param ... Additional arguments are passed on to plot()
 #' @return silent return from plot
+#' @import RITANdata
 #' @export
 #' @examples
-#' 
 #' e <- term_enrichment(vac1.day0vs31.de.genes, term_sources = 'GO_slim_generic')
 #' plot(e, min_q = .1)
 #'
