@@ -15,6 +15,7 @@ RITAN is an R package for Rapid Integration of Term Annotation and Network resou
 
 The prevalence of gene expression analysis has led to the common outcome: Researchers identified a list of genes-of-interest and are wondering how they fit together. A common example would be a research group studying the effect of a treatment and identifying the differentially expressed genes between the treatment and control groups. Two logical questions are, "What functions are achieved by this group of genes?" and "How do these genes work together to achieve that function?" The RITAN package consolidates multiple annotation resources to help answer both questions.
 
+
 # Quick Start
 
 Our process of rapidly leveraging a comprehensive set of functional annotations begins from a list of prioritized genes.  RITAN is distributed with example genesets indexed by MSigDB. For this example we chose a study of influenza response under multiple conditions. In this vignette we will demonstrate analysis across multiple annotation resources. This can be achieved in one function call as exemplified in the following "quick start" example of RITAN's annotation capabilities. 
@@ -42,14 +43,15 @@ summary(e)
 
 *Please cite each resource used in your analysis and register at [MSigDB](http://software.broadinstitute.org/gsea/msigdb/index.jsp) if you use their data. Doing so will help to ensure the future availability and extension of these valuable resources.*
 
+
 # Identify relationships between genesets
 
 A feature of RITAN is the ability to account for false-discovery rates across resources. However, the relationships among genesets is not always obvious. That is, two resources may each have a term that is highly similar if not identical to the other. Ideally, you would pick one of these terms to use, prior to analysis. The function geneset_overlap() helps with this process.
 
-```{r geneset_overlap1, echo=TRUE, warning=FALSE}
+```{r geneset_overlap1, echo=TRUE, warning=FALSE, fig.width = 7, fig.height = 7, fig.align='center'}
 # Show the fraction of genes common to multiple disease-gene relationships
 o <- geneset_overlap( geneset_list$DisGeNet )
-plot(density(c(o)))
+plot(density(c(o)), main='', xlab='Fraction Shared Genes', ylab='Prob()')
 diag(o) <- NA # ignore self-overlap
 i <- which( o > 0.8, arr.ind = TRUE )
 mat <- o[ unique(i[,1]), unique(i[,2]) ]
@@ -57,11 +59,11 @@ heatmap( mat, col = rev(gray(seq(0,1,length.out = 15))),
          cexRow=.7, cexCol=0.7, margins = c(7,7) )
 ```
 
-```{r geneset_overlap2, echo=TRUE, warning=FALSE}
+```{r geneset_overlap2, echo=TRUE, warning=FALSE, fig.width = 7, fig.height = 7, fig.align='center'}
 # Show the fraction of genes common between disease-gene relationships and GO-Slim
 o <- geneset_overlap( geneset_list$DisGeNet, geneset_list$GO_slim_generic )
 o <- o[ , !( colnames(o) %in% c('biological_process', 'molecular_function', 'cellular_component')) ] # remove the root of each sub-ontology
-plot(density(c(o)))
+plot(density(c(o)), main='', xlab='Fraction Shared Genes', ylab='Prob()')
 i <- which( o > 0.95, arr.ind = TRUE )
 mat <- o[ unique(i[,1]), unique(i[,2]) ]
 heatmap( mat, col = rev(gray(seq(0,1,length.out = 15))),
