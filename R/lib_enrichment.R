@@ -348,6 +348,7 @@ load_all_protein_coding_symbols <- function(
 #' @param term a list containing specific gene set term(s) and their corresponding gene symbols contained in one of the annotation resources, default is all gene set terms
 #'  in the GO, ReactomePathways, KEGG_filtered_canonical_pathways, and MSigDB_Hallmarks libraries
 #' @param all_symbols gene symbols to be evaluated, identified by gene symbol name. Default is all protein coding genes. This parameter should be manipulated to include only the gene symbols that pertain to the user's analysis.
+#' @param ... additional arguments are not used
 #'
 #' @return results matrix of input gene list compared to active gene sets. Q value is calculated using entire group of active gene sets.
 #' @export
@@ -378,8 +379,8 @@ load_all_protein_coding_symbols <- function(
 #' enrichment_symbols(geneset = vac1.day0vs31.de.genes, term = t) 
 #' }
 
-enrichment_symbols <- function( geneset, term = NULL, all_symbols = NA ){
-
+enrichment_symbols <- function( geneset, term = NULL, all_symbols = NA, ... ){
+    
     if (! exists("active_genesets")) {
       load_geneset_symbols()
     }
@@ -543,6 +544,7 @@ geneset_overlap <- function( s1, s2 = s1, #threshold = 0.5,
 #' @param report_resources_separately logical (default FALSE) flag to report enrichments seperately for each requested resource, or to combine them and produce FDR adjustment across the combined set
 #' @param verbose print the top results for each annotation resource
 #' @param all_symbols the background/global set of gene symbols (study dependent; we provide all protien coding genes as a default)
+#' @param filter_to_intersection [FALSE] should the background and foreground genesets be subsetted to one another?
 #' @param ... further arguments are passed on to enrichment_symbols()
 #' 
 #' @return results matrix of input gene list compared to active gene sets. Q value is calculated within each of the active gene sets.
@@ -563,26 +565,33 @@ geneset_overlap <- function( s1, s2 = s1, #threshold = 0.5,
 #' }
 term_enrichment <- function( geneset, term_sources = term_sources.default,
                              report_resources_separately = FALSE,
-                             verbose = TRUE, all_symbols = NA, ... ){
+                             verbose = TRUE, all_symbols = NA,
+                             filter_to_intersection = FALSE, ... ){
   
   if ( (!exists('all_symbols')) || all(is.na(all_symbols)) ){
     all_symbols <- load_all_protein_coding_symbols()
   }
   
   enrich <- list()
-  process_source <- function( s_file, v=TRUE ){
+  process_source <- function( s_file, v=TRUE, f_intersect=FALSE ){
     
     load_geneset_symbols( s_file, verbose = v ) # load into active_genesets
-
-    all_symbols_active <- unique(c(unlist( active_genesets ))) # baseline background
-    ## -->> Need to detect if user gave "all_symbols" and take intersection <<--
-    ## -->> Also, limit "geneset" to intersection <<--
-    if (!is.null(get('all_symbols'))){
-      all_symbols_active <- all_symbols_active[ all_symbols_active %in% all_symbols ]
+    
+    if (f_intersect){
+      all_symbols_active <- unique(c(unlist( active_genesets ))) # baseline background
+      ## -->> Need to detect if user gave "all_symbols" and take intersection <<--
+      ## -->> Also, limit "geneset" to intersection <<--
+      if (!is.null(get('all_symbols'))){
+        all_symbols_active <- all_symbols_active[ all_symbols_active %in% all_symbols ]
+      }
+      geneset <- geneset[ geneset %in% all_symbols_active ]
+    } else {
+      all_symbols_active <- all_symbols
     }
-    geneset <- geneset[ geneset %in% all_symbols_active ]
 
-    p0 <- enrichment_symbols( geneset, all_symbols = all_symbols_active, ... )  # run enrichment for active_genesets
+    # run enrichment for active_genesets
+    p0 <- enrichment_symbols( geneset, term = names(active_genesets),
+                              all_symbols = all_symbols_active, ... )
     p0 <- p0[ order(p0$p), ]
 
     if (v){
@@ -596,12 +605,15 @@ term_enrichment <- function( geneset, term_sources = term_sources.default,
 
   if( report_resources_separately ){
 
-    enrich <- lapply( term_sources, function(x){ process_source(x, v = verbose) })
+    enrich <- lapply( term_sources, function(x){
+                      process_source(x, v = verbose,
+                                     f_intersect = filter_to_intersection) })
     names(enrich) <- term_sources
 
   } else {
 
-    enrich <- process_source( term_sources, v = verbose )
+    enrich <- process_source( term_sources, v = verbose,
+                              f_intersect = filter_to_intersection )
 
   }
   
