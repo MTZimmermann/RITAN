@@ -157,12 +157,37 @@ plot(G, vertex.size = 20, vertex.frame.color = 'white' )
 
 ------
 
-#Example 5 - Write data for import into Cytoscape
+#Example 5 - Identify "Bridging" Genes/Proteins
+
+RITAN is a generic tool that can be used with other tools to facilitate novel analyses.
+
+Say you have two genes of interest that do not interact with one another, but you suspect that they influence one another. You can use the igraph package with RITAN to investigate this question.
+
+Below, we show how to identify “bridging” genes/proteins from a network using the example of two cell cycle checkpoint proteins, TP53 and SFN.
+
+```{r example5, fig.height = 5, fig.width = 5, fig.align = 'center' }
+require(igraph)
+
+G <- as.graph( network_list$PID )
+all( c("EP300", "SFN", "TP53", "CCNB1") %in% names(V(G)) )
+get.shortest.paths(G, "TP53" , to="CCNB1", mode = "all" )$vpath
+get.shortest.paths(G, "EP300", to="SFN"  , mode = "all" )$vpath
+
+G <- as.graph( network_list$HumanNet )
+all( c("EP300", "SFN", "TP53", "CCNB1") %in% names(V(G)) )
+get.shortest.paths(G, "TP53" , to="CCNB1", mode = "all" )$vpath
+get.shortest.paths(G, "EP300", to="SFN"  , mode = "all" )$vpath
+```
+
+
+------
+
+#Example 6 - Write data for import into Cytoscape
 
 Cytoscape is a powerful platform for network analysis that has gathered a large following from divers fields of application. Thus, many extensions (Apps) have been written for Cytoscape. RITAN facilitates the generation of networks using integrated resources and those networks can be exported for use in Cytoscape. Beginning from one of the induced subnetworks generated above, we demonstrate export of this data to simple text files and how it can be imported into Cytoscape for visualization and presentation.
 
 The publication for the geneset is available  [here](http://www.ncbi.nlm.nih.gov/pmc/articles/PMC2725706/) and describes which genes are "induced by white adipocyte differentiation and inhibited by troglitazone activation of PPAR-gamma." Taking data from Table 1, we annotate the genes by functional data. Additionally, we add a variable to indicate which genes are within the initial list of genes.
-```{r example5, echo=TRUE, eval=FALSE }
+```{r example6, echo=TRUE, eval=FALSE }
 my_genes <- geneset_list$MSigDB_C2[['VERNOCHET_ADIPOGENESIS']]
 net5 <- network_overlap( my_genes )
  g <- unique(c( net5$p1, net5$p2 ))
@@ -196,11 +221,11 @@ The `write_simple_table` will produce plain text files for input into Cytoscape.
 
 ------
 
-#Example 6 - Use Your Own Network Resource
+#Example 7 - Use Your Own Network Resource
 
 For many reasons, you may wish to use a network resource that we have not provided with this package. Some examples include use of a different ID system, non-human data, or use of a gene coexpression network. In this example, we use a short example of genes with tissue-specific expression from [Tang's 2010 Nature paper](http://www.nature.com/nbt/journal/v28/n7/pdf/nbt.1644.pdf), and the mouse interaction network from BioGRID.
 
-```{r example6, echo=TRUE, eval=FALSE}
+```{r example7, echo=TRUE, eval=FALSE}
 
 ## Add a new resource to "network_list"
 ### For brevity, we
@@ -257,13 +282,13 @@ From comparison of the above results, there are noticeable differences between u
 
 ------
 
-#Example 7 - Putting it All Together
+#Example 8 - Putting it All Together
 
 **RITAN's two primary functions can be used together in order to gain stronger insights into the functional role of the identified gene(s).**
 
 Between the two RITAN vignettes, you've seen how to use RITAN to perform term enrichment and to generate subnetworks leveraging multiple data sources. In the following example, we will start from a single gene of interest, gather the genes that it is known to physically interact with (protein-protein interaction; PPI), and then perform enrichment analysis on group of interacting genes/proteins.
 
-```{r example7, echo=TRUE, eval=TRUE }
+```{r example8, echo=TRUE, eval=TRUE }
 net <- network_overlap( 'FOXP3', include_neighbors = TRUE, Net2Use = c("PID","dPPI","CCSB" ) )
 genes <- unique(c( net$p1, net$p2 ))
 e1 <- term_enrichment( genes, "Blood_Translaiton_Modules", verbose=FALSE, all_symbols = cached_coding_genes )

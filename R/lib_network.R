@@ -1,4 +1,26 @@
 
+#' as.graph
+#'
+#'wrapper to convert a data.frame from RITAN an igraph graph object
+#'
+#' @param mat matrix or data frame describing a network
+#' @param p1 [1] column of first interactor
+#' @param p2 [3] column of second interactor
+#' @param ... further options passed on to igraph::graph()
+#'
+#' @return igraph object
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' G <- as.graph(network_list$PID)
+#' }
+as.graph <- function( mat, p1 = 1, p2 = 3, ... ){
+  # e.g. as.matrix( network_list$PID[, c(1,3)] ) %>% t(.) %>% c(.) %>% graph(.)
+  graph( c(t( as.matrix(mat[, c(p1,p2)]) )), ... )
+}
+
+
 #' write_simple_table
 #'
 #'This is a simple wrapper around "write.table" that writes a tab-delimited table with column names, no quoting, and no row names.

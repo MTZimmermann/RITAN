@@ -42,6 +42,50 @@ summary(e)
 
 *Please cite each resource used in your analysis and register at [MSigDB](http://software.broadinstitute.org/gsea/msigdb/index.jsp) if you use their data. Doing so will help to ensure the future availability and extension of these valuable resources.*
 
+# Identify relationships between genesets
+
+A feature of RITAN is the ability to account for false-discovery rates across resources. However, the relationships among genesets is not always obvious. That is, two resources may each have a term that is highly similar if not identical to the other. Ideally, you would pick one of these terms to use, prior to analysis. The function geneset_overlap() helps with this process.
+
+```{r geneset_overlap1, echo=TRUE, warning=FALSE}
+# Show the fraction of genes common to multiple disease-gene relationships
+o <- geneset_overlap( geneset_list$DisGeNet )
+plot(density(c(o)))
+diag(o) <- NA # ignore self-overlap
+i <- which( o > 0.8, arr.ind = TRUE )
+mat <- o[ unique(i[,1]), unique(i[,2]) ]
+heatmap( mat, col = rev(gray(seq(0,1,length.out = 15))),
+         cexRow=.7, cexCol=0.7, margins = c(7,7) )
+```
+
+```{r geneset_overlap2, echo=TRUE, warning=FALSE}
+# Show the fraction of genes common between disease-gene relationships and GO-Slim
+o <- geneset_overlap( geneset_list$DisGeNet, geneset_list$GO_slim_generic )
+o <- o[ , !( colnames(o) %in% c('biological_process', 'molecular_function', 'cellular_component')) ] # remove the root of each sub-ontology
+plot(density(c(o)))
+i <- which( o > 0.95, arr.ind = TRUE )
+mat <- o[ unique(i[,1]), unique(i[,2]) ]
+heatmap( mat, col = rev(gray(seq(0,1,length.out = 15))),
+         cexRow=.7, cexCol=0.7, margins = c(7,7) )
+```
+
+*We plan to make a reduce() function, to assist users in focusing on the unique portion of geneset resources.
+
+**The overlapping genesets can themselves be highly informative. For instance, perhaps the diseases known to involve genes responsible for chromosome organization is of great interest to you. You can combine the available resources in RITAN to rapidly identify this intersection of genesets.
+
+```{r geneset_overlap3, echo=TRUE, warning=FALSE}
+rownames(o)[ o[ , "chromosome_organization" ] > 0.66 ]
+```
+
+Or, perhaps the genes themselves for diseases related to cell motility are of interest as a new geneset.
+```{r geneset_overlap3, echo=TRUE, warning=FALSE}
+d <- rownames(o)[ o[ , "cell_motility" ] > 0.66 ]
+str(d)
+new_geneset <- intersect( unique(unlist(geneset_list$DisGeNet[d])),
+                          unique(unlist(geneset_list$GO_slim_generic$cell_motility)) )
+str(new_geneset)
+```
+
+
 # Full Example of Enrichment Analysis in RITAN
 
 This version of RITAN is distributed with the following annotation resources:
