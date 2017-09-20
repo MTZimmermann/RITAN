@@ -77,7 +77,7 @@ rownames(o)[ o[ , "chromosome_organization" ] > 0.66 ]
 ```
 
 Or, perhaps the genes themselves for diseases related to cell motility are of interest as a new geneset.
-```{r geneset_overlap3, echo=TRUE, warning=FALSE}
+```{r geneset_overlap4, echo=TRUE, warning=FALSE}
 d <- rownames(o)[ o[ , "cell_motility" ] > 0.66 ]
 str(d)
 new_geneset <- intersect( unique(unlist(geneset_list$DisGeNet[d])),
