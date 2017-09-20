@@ -242,44 +242,6 @@ e <- term_enrichment( gs, term_sources = c('GO','LDL') )
 ```
 
 
-
-# Additional Functions
-The following functions are used internally by other functions in RITAN. Brief notes about their default behavior will be printed to the console when they are called. We recommend defining the resources you'd like to use, etc, from each main function call (e.g. term_enrichment). However, if you would like to call them individually, consider the following examples:
-
-### load_geneset_symbols
-
-load_geneset_symbols allows for the use of annotation resource(s) different from, or in addition to, the resources that ship with RITAN. The result of calling this function is to set the variable "active_genesets" which will be used by further functions. The default list contains 17724 gene sets from across four annotation resources: GO, ReactomePathways, KEGG_filtered_canonical_pathways, and MSigDB_Hallmarks. The output message tells the user how many gene sets are included in the chosen/selected resources. This message can be suppressed using the verbose=FALSE option.
-
-```{r load_geneset_symbols.example, echo=TRUE}
-load_geneset_symbols()
-
-load_geneset_symbols( gmt="ReactomePathways" )
-```
-
-
-<!--
-### enrichment_symbols
-
-enrichment_symbols compares the input gene list against all active genesets and provides a hypergeometric p-value and associated q-value to measure the number of hits in the input gene list against all of the gene sets in the annotation resources contained in active_genesets. The output contains the name of the annotation resource gene set, hypergeometric p-value, number of genes from the input gene list that overlap the annotation gene set, number of genes in the annotation gene set, the names of the overlapping genes, and the q-value.
-
-```{r enrichment_symbols.example, echo = TRUE }
-data("vac2.day0vs31.de.genes")
-enrich <- enrichment_symbols( geneset = vac2.day0vs31.de.genes )
-head(enrich$name)
-```
--->
-
-
-### term_enrichment
-
-term_enrichment evaluates the input gene list for enrichment of terms described by each of the annotation resources. The function has a default set of resources that it will use - see above for examples of changing "term_sources." By default, term_enrichment will concatenate terms from all resource into one analysis and perform false discovery adjustment (q-value) across this full list. To suppress this behavior and receive enrichment results for each source individually, set the report_resources_separately parameter:
-
-```{r term_enrichment.example, eval = FALSE }
-e.together <- term_enrichment( geneset = vac2.day0vs31.de.genes )
-e.separate <- term_enrichment( geneset = vac2.day0vs31.de.genes,
-                               report_resources_separately = TRUE )
-```
-
 # References
 1.	Ashburner M, Ball CA, Blake JA, Botstein D, Butler H, Cherry JM, Davis AP, Dolinski K, Dwight SS, Eppig JT et al: Gene ontology: tool for the unification of biology. The Gene Ontology Consortium. Nat Genet 2000, 25(1):25-29.
 

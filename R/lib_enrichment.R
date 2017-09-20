@@ -338,9 +338,9 @@ load_all_protein_coding_symbols <- function(
 ### perform enrichment on gene symbols
 #' enrichment_symbols
 #'
-#' This function is called by term_enrichment() and term_enrichment_by_subset(). The user may call it directly in order to have q-values (similar to FDR adjusted p-values) calculated across multiple resources. The function utilizes the resources contained in the active_genesets vector. See load_geneset_symbols().
+#' This function is called by term_enrichment() and term_enrichment_by_subset(). The user may call it directly, but we suggest using term_enrichment(). The function uses the resources currently loaded into the active_genesets vector. See load_geneset_symbols().
 #'
-#' Outputs a data frame containing the gene set name, a hypergeometric p value, the number of genes from the
+#' Outputs a data frame containing the gene set name, a hypergeometric-test p value, the number of genes from the
 #' input gene list that occur in the gene set, the number of genes in the gene set, the gene symbols for
 #' the genes in the input gene list, and the q value.
 #'
@@ -355,9 +355,17 @@ load_all_protein_coding_symbols <- function(
 #' @examples
 #' require(RITANdata)
 #' myGeneSet <- c('BRCA1','RAD51C','VAV1','HRAS','ABCC1','CYP1B1','CYP3A5')
+#' 
+#' \dontrun{
+#' ## We suggest using term_enrichment() instead. E.g.:
+#' e <- enrichment_symbols(myGeneSet, 'GO')
+#' }
+#' 
+#' ## But, you may use enrichment_symbols() directly for an individual term:
 #' load_geneset_symbols('GO')
 #' e <- enrichment_symbols(myGeneSet, 'DNA_repair')
 #' print(e)
+#' 
 #' \dontrun{
 #' ## Gene set enrichment using intersection of gene symbols 
 #' ##   provided in geneset parameter and all protein coding genes.
