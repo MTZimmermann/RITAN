@@ -6,7 +6,7 @@
 \usage{
 term_enrichment(geneset, term_sources = term_sources.default,
   report_resources_separately = FALSE, verbose = TRUE, all_symbols = NA,
-  ...)
+  filter_to_intersection = FALSE, ...)
 }
 \arguments{
 \item{geneset}{vector of gene symbols to be evaluated}
@@ -18,6 +18,8 @@ term_enrichment(geneset, term_sources = term_sources.default,
 \item{verbose}{print the top results for each annotation resource}
 
 \item{all_symbols}{the background/global set of gene symbols (study dependent; we provide all protien coding genes as a default)}
+
+\item{filter_to_intersection}{[FALSE] should the background and foreground genesets be subsetted to one another?}
 
 \item{...}{further arguments are passed on to enrichment_symbols()}
 }

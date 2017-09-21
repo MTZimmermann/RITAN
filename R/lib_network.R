@@ -362,7 +362,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   supportedNetworks <- unique(c(names(network_list), 'STRING', 'HPRD', 'Biogrid'))
   i <- (Net2Use %in% supportedNetworks) | (file.exists(Net2Use))
   if (any(!i)){
-    w1 <- sprintf('  Unsupported Networks Requested: %s\n', paste(Net2Use[i], sep=',', collapse=',') )
+    w1 <- sprintf('  Unsupported Networks Requested: %s\n', paste(Net2Use[!i], sep=',', collapse=',') )
     w2 <- sprintf('    Supported Networks Are: %s\n', paste(supportedNetworks, sep=',', collapse=',') )
     w  <- paste0( w1, w2 )
     warning( w )

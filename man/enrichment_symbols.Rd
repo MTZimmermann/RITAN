@@ -4,7 +4,7 @@
 \alias{enrichment_symbols}
 \title{enrichment_symbols}
 \usage{
-enrichment_symbols(geneset, term = NULL, all_symbols = NA)
+enrichment_symbols(geneset, term = NULL, all_symbols = NA, ...)
 }
 \arguments{
 \item{geneset}{vector of gene symbols to be evaluated}
@@ -13,6 +13,8 @@ enrichment_symbols(geneset, term = NULL, all_symbols = NA)
 in the GO, ReactomePathways, KEGG_filtered_canonical_pathways, and MSigDB_Hallmarks libraries}
 
 \item{all_symbols}{gene symbols to be evaluated, identified by gene symbol name. Default is all protein coding genes. This parameter should be manipulated to include only the gene symbols that pertain to the user's analysis.}
+
+\item{...}{additional arguments are not used}
 }
 \value{
 results matrix of input gene list compared to active gene sets. Q value is calculated using entire group of active gene sets.

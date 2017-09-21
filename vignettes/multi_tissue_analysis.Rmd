@@ -14,9 +14,12 @@ In this vignette, we will analyze a gene expression dataset with samples from mu
 
 # Enrichment to Identify Tissue-Specific Changes
 
+We will use data from BgeeDB normal-tissue expression. In research, we will typically want to compare normal to one or more treatment ro disease groups. Thus, consider the below comparison as a illustrative example.
+
 ```{r first_load, echo=TRUE, warning=FALSE, results='hide', message=FALSE}
 library(RITANdata)
 library(RITAN)
+library(BgeeDB)
 ```
 
 
