@@ -29,6 +29,7 @@ Imports:
     png,
     sqldf,
     igraph,
+    BgeeDB,
     knitr,
     RITANdata
 VignetteBuilder: knitr

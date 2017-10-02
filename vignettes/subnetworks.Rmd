@@ -149,7 +149,7 @@ require(igraph)
 net4 <- network_overlap( my_genes, Net2Use = c('PID','dPPI','TFe'),
                          include_neighbors = FALSE, dedup = TRUE )
 edges <- as.matrix( net4[, c(1,3)] )
-G <- graph( c(t(edges)), directed = FALSE )
+G <- igraph::make_undirected_graph( c(t(edges)) )
 par(mar=rep(0,4))
 plot(G, vertex.size = 20, vertex.frame.color = 'white' )
 ```
