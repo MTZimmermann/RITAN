@@ -730,6 +730,7 @@ term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.
 #' @import RITANdata
 #' @export
 #' @examples
+#' require(RITANdata)
 #' e <- term_enrichment(vac1.day0vs31.de.genes, term_sources = 'GO_slim_generic')
 #' plot(e, min_q = .1)
 #'

@@ -2,8 +2,7 @@
 % Please edit documentation in R/lib_enrichment.R
 \name{geneset_overlap}
 \alias{geneset_overlap}
-\title{geneset_overlap
-Return assymetric matrix of the fraction of genes shared between sets. E.G. The fraction of the first set that is "covered" by or "overlaps" the second set.}
+\title{geneset_overlap}
 \usage{
 geneset_overlap(s1, s2 = s1, s.size = unlist(lapply(s1, length)))
 }
@@ -12,16 +11,16 @@ geneset_overlap(s1, s2 = s1, s.size = unlist(lapply(s1, length)))
 
 \item{s2}{the second geneset}
 
-\item{s.size}{Default is to determint the lengths of "s1" elements}
+\item{s.size}{Denominator used in each comparison. The default is to determint the lengths of elements in "s1"}
 }
 \value{
 results matrix of input gene list compared to active gene sets. Q value is calculated using entire group of active gene sets.
 }
 \description{
-geneset_overlap
 Return assymetric matrix of the fraction of genes shared between sets. E.G. The fraction of the first set that is "covered" by or "overlaps" the second set.
 }
 \examples{
+require(RITANdata)
 r <- geneset_overlap( geneset_list$MSigDB_Hallmarks, geneset_list$NetPath_Gene_regulation )
 heatmap(r, col = rev(gray(seq(0,1,length.out = 15))) )
 summary(c(r))
