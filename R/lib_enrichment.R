@@ -493,16 +493,18 @@ term.test <- function( set, sub_set, total ){
 
 ### --------------------------------------------------------------- -
 #' geneset_overlap
+#' 
 #' Return assymetric matrix of the fraction of genes shared between sets. E.G. The fraction of the first set that is "covered" by or "overlaps" the second set.
 #'
 #' @param s1 The first geneset
 #' @param s2 the second geneset
-#' @param s.size Default is to determint the lengths of "s1" elements
+#' @param s.size Denominator used in each comparison. The default is to determint the lengths of elements in "s1"
 #'
 #' @return results matrix of input gene list compared to active gene sets. Q value is calculated using entire group of active gene sets.
 #' @export
 #'
 #' @examples
+#' require(RITANdata)
 #' r <- geneset_overlap( geneset_list$MSigDB_Hallmarks, geneset_list$NetPath_Gene_regulation )
 #' heatmap(r, col = rev(gray(seq(0,1,length.out = 15))) )
 #' summary(c(r))
