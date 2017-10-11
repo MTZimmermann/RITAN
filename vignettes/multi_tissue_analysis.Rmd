@@ -9,31 +9,72 @@ vignette: >
   %\VignetteEncoding{UTF-8}
 ---
 
-In this vignette, we will analyze a gene expression dataset with samples from multiple tissues. We will highlight:
+In this vignette, we will analyze a gene expression dataset with samples from multiple tissues. We will:
+*download a public dataset
+*identify the genes expressed in two tissues
+*run enrichment analysis, cognizant of each tissues' expression profile
+*visualize network-based relationships between the tissues' expression profiles
 
 
-# Enrichment to Identify Tissue-Specific Changes
+# Enrichment to Identify Tissue-Specific Patterns
 
-We will use data from BgeeDB normal-tissue expression. In research, we will typically want to compare normal to one or more treatment ro disease groups. Thus, consider the below comparison as a illustrative example.
+We will use data from BgeeDB normal-tissue expression. In research, we will typically want to compare normal to one or more treatment or disease groups. Thus, consider this as an illustrative example.
 
-```{r first_load, echo=TRUE, warning=FALSE, results='hide', message=FALSE}
+```{r bgee1, echo=TRUE, eval=FALSE, warning=FALSE, fig.width = 7, fig.height = 7, fig.align='center'}
 library(RITANdata)
 library(RITAN)
 library(BgeeDB)
-```
+bgee <- Bgee$new(species = "Homo_sapiens", dataType = "rna_seq", release = "13.2")
+data <- getData(bgee)
 
+e <- formatData(bgee, data[[1]], callType = "present", stats = "rpkm")
+# str(sampleNames(e))
+# str(featureNames(e))
+# str(phenoData(e))
+# table(phenoData(e)@data$Anatomical.entity.name)
 
-```{r geneset_overlap1, echo=TRUE, warning=FALSE, fig.width = 7, fig.height = 7, fig.align='center'}
-## TO DO
-```
+## -------------------- -
+## Get expression in two tissues
+tmp <- exprs(e)[ , phenoData(e)@data$Anatomical.entity.name == "heart" ]
+i <- apply( tmp, 1, function(x){ any(is.na(x)) })
+expr_heart <- tmp[ !i, ]
 
+tmp <- exprs(e)[ , phenoData(e)@data$Anatomical.entity.name == "skeletal muscle tissue" ]
+i <- apply( tmp, 1, function(x){ any(is.na(x)) })
+expr_skele <- tmp[ !i, ]
 
-# Network Interactions Within Each Tissue
+library(venn)
+venn::venn( list(Heart = rownames(expr_heart),
+                 Skeletal = rownames(expr_skele) ),
+            cexil= 1, cexsn = 1, zcolor = "style" )
+
+## -------------------- -
+library(biomaRt)
+ensembl <- useMart("ensembl", dataset = "hsapiens_gene_ensembl" )
+map_heart <- getBM( attributes=c('ensembl_gene_id','ensembl_transcript_id','hgnc_symbol'),
+                    filters = 'ensembl_gene_id', values = rownames(expr_heart), mart = ensembl )
+map_skele <- getBM( attributes=c('ensembl_gene_id','ensembl_transcript_id','hgnc_symbol'),
+                    filters = 'ensembl_gene_id', values = rownames(expr_skele), mart = ensembl )
+
+## -------------------- -
+## Enrichment Within Each Tissue
 
 to do...
 
 
-# Similarities and Differences Between Tissues
+## -------------------- -
+## Network Interactions Within Each Tissue
 
 to do...
+
+
+## -------------------- -
+## Similarities and Differences Between Tissues
+
+to do...
+
+
+
+```
+
 
