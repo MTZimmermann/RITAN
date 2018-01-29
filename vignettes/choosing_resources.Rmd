@@ -4,7 +4,7 @@ author: "Michael T. Zimmermann"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Enrichment Vignette}
+  %\VignetteIndexEntry{Choosing Resources}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
