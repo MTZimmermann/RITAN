@@ -96,13 +96,13 @@ readSIF <- function( file = NA, header = FALSE, sep="\t", as.is=TRUE,
     
     sif <- data.frame( p1 = tmp[,p1],
                        edge_type = tmp[,et],
-                       p2 = tmp[,p2] )
+                       p2 = tmp[,p2], stringsAsFactors=FALSE )
     
   } else {
     
     sif <- data.frame( p1 = tmp[,p1],
                        edge_type = et,
-                       p2 = tmp[,p2] )
+                       p2 = tmp[,p2], stringsAsFactors=FALSE )
     
   }
   
@@ -299,11 +299,11 @@ check_any_net_input <- function(set, Net2Use = names(network_list) ){
 #'
 #' @param gene_list A list of genes to use. The function will identify edges across resources for or among these genes; identify the induced subnetwork around the gene_list.
 #' @param Net2Use Name of network resource(s) to use.
-#' @param minStringScore If STRING is among the Net2Use, only edges of at least the indicated score will be included. Default = 150.
-#' @param minHumanNetScore If HumanNet is among the Net2Use, only edges of at least the indicated score will be included. Default = 0.4.
+#' @param minStringScore If STRING is among the Net2Use, only edges of at least the indicated score will be included.
+#' @param minHumanNetScore If HumanNet is among the Net2Use, only edges of at least the indicated score will be included.
 #' @param minScore Same as above, but used for any other networks where "score" is provided
 #' @param verbose If TRUE (default), the function will update the user on what it is doing and how many edges are identified for each resource in Net2Use.
-#' @param dedup If TRUE (Default = FALSE), remove edges reported by multiple resources. The edge type will be a semi-colon delimited list of the resources that had reported the interaction.
+#' @param dedup If TRUE (Default = TRUE), remove edges reported by multiple resources. The edge type will be a semi-colon delimited list of the resources that had reported the interaction.
 #' @param directed_net Logical indicating if the network resources should be interpreted as directed. 
 #' @param include_neighbors Logical to include 1st neighbors of "gene_list" (genes not in gene_list, but directly connected to them) in the induced subnetwork.
 #' @param STRING_cache_directory A direcotry where STRING data files are cached to speed up subsequent queries; no need to re-download. If NA (the default), caches STRING data in your Rpackages directory. If "", uses a temporary directory that is cleared when the R-session closes.
@@ -334,7 +334,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
                     minScore       = 0,
                     
                     verbose        = TRUE,
-                    dedup          = FALSE,
+                    dedup          = TRUE,
                     directed_net   = FALSE,
                     include_neighbors = FALSE,
                     
@@ -403,7 +403,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   ## -------------------------- -
   ## Get all interactions for resources in "network_list"
   NetInList <- Net2Use[ Net2Use %in% names(network_list) ]
-  sif <- data.frame( p1=character(0), edge_type=character(0), p2=character(0))
+  sif <- data.frame( p1=character(0), edge_type=character(0), p2=character(0), stringsAsFactors=FALSE)
   sif <- do.call( rbind, lapply( NetInList , select_edges ) )
   
   ## Add neighbors, if requested
@@ -422,7 +422,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   
   ## Check if anything was included - this is to prevent a NULL return
   if (is.null(dim(sif))){
-    sif <- data.frame( p1=character(0), edge_type=character(0), p2=character(0))
+    sif <- data.frame( p1=character(0), edge_type=character(0), p2=character(0), stringsAsFactors=FALSE)
   }
   
   
@@ -461,6 +461,13 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
         
         p <- .libPaths()[ which.max(j) ]
         STRING_cache_directory <- paste( p, 'STRINGdb.cache', sep='/' )
+        
+        # check if both directorise are writable
+        if ( ( file.access(STRING_cache_directory,2) == -1 ) ||
+             ( file.access(p,2) == 1 ) ){
+          stop('You do not have write access to STRING_cache_directory. You have requested to use STRING. Please change STRING_cache_directory to a directory that you have write permission for.')
+        }
+        
         dir.create(file.path(p, 'STRINGdb.cache'), showWarnings = FALSE)
         
         if (verbose){
@@ -530,10 +537,10 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
       #                         column="SYMBOL", keytype="ENSEMBLPROT", multiVals="first")
       
       ## Add STRING interactions to the output
-      sif <- rbind( sif, data.frame( p1 = i$from.symbol,
+      sif <- rbind( sif, data.frame( p1 = as.character( i$from.symbol ),
                                      edge_type = sprintf('STRING%d',
                                                          round(i$combined_score/100)*100),
-                                     p2 = i$to.symbol
+                                     p2 = as.character( i$to.symbol ), stringsAsFactors=FALSE
                                      ))
       
     } else {
@@ -561,9 +568,10 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
       
       i <- get.edgelist(g.hprd, names=TRUE)
       
-      sif <- rbind( sif, data.frame( p1 = i[, 1],
+      sif <- rbind( sif, data.frame( p1 = as.character( i[, 1]),
                                      edge_type = rep('HPRD', dim(i)[1] ),
-                                     p2 = i[, 2] ))
+                                     p2 = as.character( i[, 2] ), stringsAsFactors=FALSE
+                                     ))
     } else {
       stop('HPRD was requested, but the required package ProNet was not found by requireNamespace...')
     }
@@ -590,9 +598,10 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
       
       i <- get.edgelist(g.biog, names=TRUE)
       
-      sif <- rbind( sif, data.frame( p1 = i[, 1],
+      sif <- rbind( sif, data.frame( p1 = as.character( i[, 1] ),
                                      edge_type = rep('Biogrid', dim(i)[1] ),
-                                     p2 = i[, 2] ))
+                                     p2 = as.character( i[, 2] ), stringsAsFactors=FALSE
+                                     ))
       
     } else {
       stop('Biogrid was requested, but the required package ProNet was not found by requireNamespace...')
