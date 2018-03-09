@@ -4,14 +4,14 @@
 \alias{term_enrichment_by_subset}
 \title{term_enrichment_by_subset}
 \usage{
-term_enrichment_by_subset(groups = NA, term_sources = term_sources.default,
+term_enrichment_by_subset(groups = NA, resources = resources.default,
   q_value_threshold = 0.01, verbose = TRUE, display_type = "q",
   phred = TRUE, ...)
 }
 \arguments{
 \item{groups}{A list() of genes for enrichment. Each entry in the list() is an input set of genes. Enrichment is performed for each of these entries.}
 
-\item{term_sources}{character vector for which resources to use in enrichment}
+\item{resources}{character vector for which resources to use in enrichment}
 
 \item{q_value_threshold}{minimum q-value (FDR adjusted p-value) in any group for the term to be included in results}
 

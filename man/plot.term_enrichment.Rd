@@ -26,7 +26,7 @@ plot.term_enrichment
 }
 \examples{
 require(RITANdata)
-e <- term_enrichment(vac1.day0vs31.de.genes, term_sources = 'GO_slim_generic')
+e <- term_enrichment(vac1.day0vs31.de.genes, resources = 'GO_slim_generic')
 plot(e, min_q = .1)
 
 }

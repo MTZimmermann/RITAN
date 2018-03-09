@@ -37,7 +37,7 @@ my_genes <- c('ABCA2','ACAT2','ACSS2','CD9','CPEB2','CTNNB1','FASN','LDLR','LPL'
 #  1) only look at two resources (of the many available)
 #  2) use a cached background gene list of human protien coding genes
 resources <- c("ReactomePathways", "MSigDB_Hallmarks")
-e <- term_enrichment(my_genes, term_sources = resources, all_symbols = cached_coding_genes)
+e <- term_enrichment(my_genes, resources = resources, all_symbols = cached_coding_genes)
 summary(e)
 ```
 
@@ -76,7 +76,7 @@ The function term_enrichment_by_subset() uses these annotation resources to eval
 
 ```{r apply_enrichment_to_selection, echo=TRUE }
 e <- term_enrichment_by_subset( study_set, q_value_threshold = 1e-5, 
-                                term_sources = resources,
+                                resources = resources,
                                 all_symbols = cached_coding_genes )
 ```
 
@@ -127,7 +127,7 @@ While enrichment accounts for the size of each geneset and the number of genes s
 
 ```{r apply_enrichment_to_selection_n, echo=TRUE }
 n <- term_enrichment_by_subset( study_set, q_value_threshold = 1e-5,
-                                term_sources = resources,
+                                resources = resources,
                                 all_symbols = cached_coding_genes,
                                 display_type = 'n', phred = FALSE )
 ```
@@ -154,23 +154,23 @@ te <- term_enrichment( geneset = vac1.day0vs31.de.genes )
 
 The R object, geneset_list, included with the package contains 15 possible annotation annotation resources. They are: `r names(geneset_list)` .
 
-The term_enrichment function can be modified to produce results from different gene sets by setting the term_sources parameter to one or more of these annotation resources.
+The term_enrichment function can be modified to produce results from different gene sets by setting the "resources" parameter to one or more of these annotation resources.
 
 
 # Term Enrichment Using Other Resources
 
-The term_enrichment function can be modified to produce results from different gene sets by setting the term_sources parameter to one or more of the annotation resources available to RITAN.
+The term_enrichment function can be modified to produce results from different gene sets by setting the "resources" parameter to one or more of the annotation resources available to RITAN.
 
 
 ```{r term_enrichment2, eval=FALSE }
 e <- term_enrichment( geneset = vac1.day0vs31.de.genes, verbose = TRUE, 
-                      term_sources = c("Blood_Translation_Modules", "MSigDB_C7") )
+                      resources = c("Blood_Translation_Modules", "MSigDB_C7") )
 ```
 
 An efficient way to include all available resources would be:
 ```{r term_enrichment3, eval=FALSE }
 e <- term_enrichment( geneset = vac1.day0vs31.de.genes, verbose = TRUE, 
-                      term_sources = names(geneset_list) )
+                      resources = names(geneset_list) )
 ```
 
 *However, one must be cautious about the appropriateness of doing so. Running enrichment across all available sources will provide a comprehensive view of what biologic functions your list of genes may influence, but it is likely that the terms across resources are related to one another. For instance, there are GO terms that closely correspond to certain pathway functions. The non-independence of terms could make false discovery adjustment too conservative. 
@@ -203,7 +203,7 @@ Lymphoma, Non-Hodgkin	        umls:C0024305	 CSF2   CSF3	  CYP2E1
 
 Now, run the term enrichment for disease association.
 ```{r term_enrichment_provided_gmt, echo=TRUE}
-e2  <- term_enrichment( gs, term_sources = gmt )
+e2  <- term_enrichment( gs, resources = gmt )
 print( e2[1:3,-5] )
 ```
 
@@ -238,7 +238,7 @@ geneset_list$LDL = list( LDL_import = c('APOB','APOE','LDLR'),
 
 There are now two terms within the "LDL" resource that can be used in term enrichment by:
 ```{r LDLe, eval=FALSE}
-e <- term_enrichment( gs, term_sources = c('GO','LDL') )
+e <- term_enrichment( gs, resources = c('GO','LDL') )
 ```
 
 

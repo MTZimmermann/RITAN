@@ -180,7 +180,7 @@ check_net_input <- function( set, ref, check4similar = FALSE,
 #'A Quality Control function. This function applies check_net_input() to all available resources (default).
 #'
 #' @param set An input list of genes to check against references.
-#' @param Net2Use The collection of network resources to check within.
+#' @param resources The collection of network resources to check within.
 #' 
 #' @return Logical vector indicating if the genes in "set" are within ANY of the resources.
 #' @export
@@ -191,9 +191,9 @@ check_net_input <- function( set, ref, check4similar = FALSE,
 #' myGeneSet <- c('BRCA1','RAD51C','VAV1','HRAS','ABCC1','CYP1B1','CYP3A5')
 #' yorn <- check_any_net_input( myGeneSet )
 #' print(yorn)
-check_any_net_input <- function(set, Net2Use = names(network_list) ){
+check_any_net_input <- function(set, resources = names(network_list) ){
   
-  # if (all(Net2Use %in% names(network_list))){
+  # if (all(resources %in% names(network_list))){
   # } else {
   #   #warning('STRING and HPRD are now implemented as package calls, rather than indexed in network_list. Thus, they are not accessible to check_net_input()... This is on our "to-do" list...')
   #   # if (x == 'STRING'){
@@ -205,7 +205,7 @@ check_any_net_input <- function(set, Net2Use = names(network_list) ){
   #   # }
   # }
   
-  o <- lapply( network_list[Net2Use] , function(y){
+  o <- lapply( network_list[resources] , function(y){
       
       check_net_input( set, y, check4similar = FALSE )
       
@@ -298,11 +298,11 @@ check_any_net_input <- function(set, Net2Use = names(network_list) ){
 #' network_overlap
 #'
 #' @param gene_list A list of genes to use. The function will identify edges across resources for or among these genes; identify the induced subnetwork around the gene_list.
-#' @param Net2Use Name of network resource(s) to use.
-#' @param minStringScore If STRING is among the Net2Use, only edges of at least the indicated score will be included.
-#' @param minHumanNetScore If HumanNet is among the Net2Use, only edges of at least the indicated score will be included.
+#' @param resources Name of network resource(s) to use.
+#' @param minStringScore If STRING is among the resources, only edges of at least the indicated score will be included.
+#' @param minHumanNetScore If HumanNet is among the resources, only edges of at least the indicated score will be included.
 #' @param minScore Same as above, but used for any other networks where "score" is provided
-#' @param verbose If TRUE (default), the function will update the user on what it is doing and how many edges are identified for each resource in Net2Use.
+#' @param verbose If TRUE (default), the function will update the user on what it is doing and how many edges are identified for each resource.
 #' @param dedup If TRUE (Default = TRUE), remove edges reported by multiple resources. The edge type will be a semi-colon delimited list of the resources that had reported the interaction.
 #' @param directed_net Logical indicating if the network resources should be interpreted as directed. 
 #' @param include_neighbors Logical to include 1st neighbors of "gene_list" (genes not in gene_list, but directly connected to them) in the induced subnetwork.
@@ -319,7 +319,7 @@ check_any_net_input <- function(set, Net2Use = names(network_list) ){
 #' ## Get interactions among a list of genes from the PID: Pathway Interaction Database
 #' require(RITANdata)
 #' myGeneSet <- c('BRCA1','RAD51C','VAV1','HRAS','ABCC1','CYP1B1','CYP3A5')
-#' sif <- network_overlap( myGeneSet, Net2Use = 'PID')
+#' sif <- network_overlap( myGeneSet, resources = 'PID')
 #' print(sif)
 #' 
 #' \dontrun{
@@ -327,7 +327,7 @@ check_any_net_input <- function(set, Net2Use = names(network_list) ){
 #' ## Use 4 seperate resources, but trim STRING to only include more confident interactions
 #' sif <- network_overlap( myGeneSet, c('dPPI','HPRD','CCSB','STRING'), minStringScore = 500 )
 #' }
-network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPRD','CCSB','STRING'),
+network_overlap <- function( gene_list = NA, resources = c('PID','TFe','dPPI','HPRD','CCSB','STRING'),
                     
                     minStringScore = 700, # 7.8% have a score >= 0.7
                     minHumanNetScore = 0.4, # 0.5 ==> 84.8%, 1.0 ==> 44.7%, 1.5 ==> 25.8%, 2.0 ==> 12.9%, 2.5 ==> 6.6%, 3.0 ==> 3.0%
@@ -352,7 +352,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
       cat('** No input list provided.\n** The full edge list from requested networks will be returned.\n')
     }
     return_full_network <- TRUE
-    net <- do.call( rbind, lapply( Net2Use, function(x){
+    net <- do.call( rbind, lapply( resources, function(x){
       network_list[[x]][, c('p1','edge_type','p2') ] }) )
     return( net )
   }
@@ -360,9 +360,9 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   
   ## 
   supportedNetworks <- unique(c(names(network_list), 'STRING', 'HPRD', 'Biogrid'))
-  i <- (Net2Use %in% supportedNetworks) | (file.exists(Net2Use))
+  i <- (resources %in% supportedNetworks) | (file.exists(resources))
   if (any(!i)){
-    w1 <- sprintf('  Unsupported Networks Requested: %s\n', paste(Net2Use[!i], sep=',', collapse=',') )
+    w1 <- sprintf('  Unsupported Networks Requested: %s\n', paste(resources[!i], sep=',', collapse=',') )
     w2 <- sprintf('    Supported Networks Are: %s\n', paste(supportedNetworks, sep=',', collapse=',') )
     w  <- paste0( w1, w2 )
     warning( w )
@@ -402,7 +402,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   
   ## -------------------------- -
   ## Get all interactions for resources in "network_list"
-  NetInList <- Net2Use[ Net2Use %in% names(network_list) ]
+  NetInList <- resources[ resources %in% names(network_list) ]
   sif <- data.frame( p1=character(0), edge_type=character(0), p2=character(0), stringsAsFactors=FALSE)
   sif <- do.call( rbind, lapply( NetInList , select_edges ) )
   
@@ -428,7 +428,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   
   ## -------------------------- -
   ## Initiate loader for STRING data
-  if ('STRING' %in% Net2Use){
+  if ('STRING' %in% resources){
     if (requireNamespace("STRINGdb", quietly = TRUE)) {
       
       map.input.to.STRING <- function( genes = NULL, s. = s, removeUnmappedRows = TRUE ){
@@ -551,7 +551,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   
   ## -------------------------- -
   ## Initiate loader for HPRD data
-  if ('HPRD' %in% Net2Use){
+  if ('HPRD' %in% resources){
     if (requireNamespace("ProNet", quietly = TRUE)) {
       #requireNamespace("ProNet")
       #require(ProNet)
@@ -580,7 +580,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   
   ## -------------------------- -
   ## Initiate loader for BioGrid data
-  if ('Biogrid' %in% Net2Use){
+  if ('Biogrid' %in% resources){
     if (requireNamespace("ProNet", quietly = TRUE)) {
       #requireNamespace("ProNet")
       #require(ProNet)
@@ -611,16 +611,16 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   
   ## -------------------------- -
   ## Read in user-supplied SIF files (assumes SIF file format)
-  if( any(file.exists(Net2Use)) ){
+  if( any(file.exists(resources)) ){
     
-    f <- which(file.exists(Net2Use))
+    f <- which(file.exists(resources))
     for (fi in f){
       
       if (verbose){
-        cat(sprintf('Reading SIF file: %s',Net2Use[fi]), sep="\n" )
+        cat(sprintf('Reading SIF file: %s', resources[fi]), sep="\n" )
       }
       
-      y <- readSIF( Net2Use[fi] )
+      y <- readSIF( resources[fi] )
       
       if (include_neighbors){
         hit <- (y$p1 %in% gene_list) | (y$p2 %in% gene_list)
@@ -708,7 +708,7 @@ network_overlap <- function( gene_list = NA, Net2Use = c('PID','TFe','dPPI','HPR
   }
   
   ## Add attributes to the output so that we can always check what was actually run.
-  attr(sif,'param') <- data.frame( 'Net2Use' = Net2Use,
+  attr(sif,'param') <- data.frame( 'resources' = resources,
                                    'minStringScore' = minStringScore,
                                    'minHumanNetScore' = minHumanNetScore,
                                    'minScore' = minScore,

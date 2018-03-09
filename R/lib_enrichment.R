@@ -1,7 +1,7 @@
 ### TO IMPLEMENT
 ## - distributional test between random netowrks and a bootstrapped estimate from your data better than current interconnectivity test? (would just be a more confident estimate of observation)
 
-term_sources.default = c("GO", "ReactomePathways", "KEGG_filtered_canonical_pathways", "MSigDB_Hallmarks")
+resources.default = c("GO", "ReactomePathways", "KEGG_filtered_canonical_pathways", "MSigDB_Hallmarks")
 
 ### --------------------------------------------------------------- -
 ## Declare datasets
@@ -189,10 +189,10 @@ load_geneset_symbols <- function( gmt = NA, gmt_dir = '', verbose = TRUE ){
   if ( all(is.na(gmt)) ){
     ## ---------------------------------- -
     ## Default genesets
-    sets <- do.call( c, geneset_list[ term_sources.default ])
+    sets <- do.call( c, geneset_list[ resources.default ])
     if (verbose){
       warning( sprintf('\nNo input annotation resource was selected. Defaulting to:\n%s',
-                       paste(term_sources.default, sep=', ', collapse=', ') ))
+                       paste(resources.default, sep=', ', collapse=', ') ))
     }
 
   } else if ( all(is.character(gmt)) && all( gmt %in% names(geneset_list) ) ){
@@ -535,6 +535,88 @@ geneset_overlap <- function( s1, s2 = s1, #threshold = 0.5,
 }
 
 
+#' resource_reduce
+#' Merge terms across resources to reduce the number of redundant and semi-redundant terms
+#'
+#' @param genesets the input genesets to consider. May be from one or multiple resources.
+#' @param min_overlap terms that share at least this fraction of genes will be merged
+#' @param verbose if TRUE, print status and summary output 
+#' @param mutual_overlap [TO DO; FEATURE NOT IMPLEMENTED] if TRUE, the overlap must be reciprocal in order to merge
+#' 
+#' @return the list of terms, after merging to reduce redundnat and semi-redundant terms
+#' @export
+#' 
+#' @examples
+#' require(RITANdata)
+#' r <- resource_reduce( geneset_list$DisGeNet )
+#'
+resource_reduce <- function( genesets = NULL, min_overlap = 0.8, verbose = TRUE ){
+  
+  if (all(is.null(genesets))){
+    stop('no terms/genesets were provided')
+  }
+  
+  if ( (length(genesets) > 2000) & verbose ){
+    warning(sprintf( 'This function is considering all pairwise relationships among the %d input terms/genesets.
+This may take some time...', length(genesets) ))
+  }
+  
+  o <- geneset_overlap(genesets)
+  diag(o) <- NA # ignore self-overlap
+  i <- which( o > min_overlap, arr.ind = TRUE )
+  
+  all_terms <- unique(c(rownames(o), colnames(o)))
+  terms_with_overlap <- unique(c( rownames(o)[ i[,1] ], colnames(o)[ i[,2] ] ))
+  
+  merge_list <- new_genesets <- list()
+  seen <- rep(FALSE, length(all_terms))
+  gi <- 0
+  for (r in 1:dim(i)[1]){
+    
+    ## initilize new group
+    if (seen[ i[r,1] ] == FALSE){
+      gi <- gi + 1
+      seen[i[r,1]] <- seen[i[r,2]] <- TRUE
+      merge_list[[gi]] <- c( rownames(o)[ i[r,1] ], colnames(o)[ i[r,2] ] )
+    } else {
+      next
+    }
+    
+    ## populate group with all terms/sets that are highly related
+    j <- (!seen) & ( ( all_terms %in% colnames(o)[ i[ i[,1] == i[r,1] , 2] ] ) |
+                     ( all_terms %in% rownames(o)[ i[ i[,2] == i[r,2] , 1] ] ) )
+    while( any(j) ){
+      
+      merge_list[[gi]] <- sort(unique(c( merge_list[[gi]], all_terms[j] )))
+      seen[j] <- TRUE
+      j <- (!seen) & ( ( all_terms %in% colnames(o)[ i[ i[,1] == i[r,1] , 2] ] ) |
+                       ( all_terms %in% rownames(o)[ i[ i[,2] == i[r,2] , 1] ] ) )
+      
+    }
+    
+    ## generate the merged geneset
+    new_genesets[[gi]] <- sort(unique(c(unlist( genesets[ merge_list[[gi]] ] ))))
+    names(new_genesets)[gi] <- paste( merge_list[[gi]], sep=';', collapse = ';' )
+    
+  }
+  
+  out <- c( new_genesets, genesets[ !(names(genesets) %in% terms_with_overlap) ] )
+  
+  if (verbose){
+    cat(sprintf('
+The input list had %d terms/genesets.
+The %d terms with overlaps of %.2f were merged into %d composite terms.
+The updated term list with %d terms will be returned.
+',
+                length(genesets), length(terms_with_overlap), min_overlap, length(new_genesets), length(out) ))
+  }
+  
+  return(out)
+  
+}
+
+
+
 ### --------------------------------------------------------------- -
 ### Enrichment analysis
 #' term_enrichment
@@ -542,7 +624,7 @@ geneset_overlap <- function( s1, s2 = s1, #threshold = 0.5,
 #' term_enrichment evaluates the input gene list for enrichment within each of the annotation resources. This differs from the enrichment_symbols function which evaluates the gene list for enrichment against all of the annotation resources grouped together.
 #'
 #' @param geneset vector of gene symbols to be evaluated
-#' @param term_sources list containing the reference gene sets to test for enrichment
+#' @param resources list containing the reference gene sets to test for enrichment
 #' @param report_resources_separately logical (default FALSE) flag to report enrichments seperately for each requested resource, or to combine them and produce FDR adjustment across the combined set
 #' @param verbose print the top results for each annotation resource
 #' @param all_symbols the background/global set of gene symbols (study dependent; we provide all protien coding genes as a default)
@@ -562,10 +644,10 @@ geneset_overlap <- function( s1, s2 = s1, #threshold = 0.5,
 #' 
 #' \dontrun{
 #' term_enrichment(geneset = vac1.day0vs31.de.genes)
-#' term_enrichment(geneset = vac1.day0vs31.de.genes, term_sources = "MSigDB_Hallmarks")
+#' term_enrichment(geneset = vac1.day0vs31.de.genes, resources = "MSigDB_Hallmarks")
 #' vac1.day0v31.enrichment <- term_enrichment(geneset = vac1.day0vs31.de.genes, verbose = FALSE)
 #' }
-term_enrichment <- function( geneset, term_sources = term_sources.default,
+term_enrichment <- function( geneset, resources = resources.default,
                              report_resources_separately = FALSE,
                              verbose = TRUE, all_symbols = NA,
                              filter_to_intersection = FALSE, ... ){
@@ -607,20 +689,20 @@ term_enrichment <- function( geneset, term_sources = term_sources.default,
 
   if( report_resources_separately ){
 
-    enrich <- lapply( term_sources, function(x){
+    enrich <- lapply( resources, function(x){
                       process_source(x, v = verbose,
                                      f_intersect = filter_to_intersection) })
-    names(enrich) <- term_sources
+    names(enrich) <- resources
 
   } else {
 
-    enrich <- process_source( term_sources, v = verbose,
+    enrich <- process_source( resources, v = verbose,
                               f_intersect = filter_to_intersection )
 
   }
   
   class(enrich) <- c( 'term_enrichment', class(enrich) )
-  attr(enrich, 'term_sources') <- term_sources
+  attr(enrich, 'resources') <- resources
   
   return(enrich)
 
@@ -633,7 +715,7 @@ term_enrichment <- function( geneset, term_sources = term_sources.default,
 #' Run enrichment simultaneously across a group of prioritized gene lists. For example, in a time course dataset, one may have a different list of genes that are differentially expressed at each time point. This function facilitates rapid evaluation of term enrichment across time point comparisons. Alternatively, one may have a different list of differentially expressed genes by drug treatment, environmental condition, ect.
 #'
 #' @param groups A list() of genes for enrichment. Each entry in the list() is an input set of genes. Enrichment is performed for each of these entries.
-#' @param term_sources character vector for which resources to use in enrichment
+#' @param resources character vector for which resources to use in enrichment
 #' @param q_value_threshold minimum q-value (FDR adjusted p-value) in any group for the term to be included in results
 #' @param verbose print additional status updates on what the function is doing
 #' @param display_type Flag for which data type will be returned. One of "q" (default) for q-values, "p" for unadjusted p-values, or "n" for the number of genes overlapping the term.
@@ -661,7 +743,7 @@ term_enrichment <- function( geneset, term_sources = term_sources.default,
 #' plot( m, label_size_y = 4, show_values = FALSE )
 #' }
 #' 
-term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.default,
+term_enrichment_by_subset <- function( groups = NA, resources = resources.default,
                                        q_value_threshold = 0.01, verbose = TRUE,
                                        display_type = 'q', phred=TRUE, ... ){
 
@@ -677,7 +759,7 @@ term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.
   
   ## Load the requested resources
   ## This will load them as a group into "active_genesets"
-  load_geneset_symbols(term_sources, verbose = verbose)
+  load_geneset_symbols(resources, verbose = verbose)
   
   ## get enrichments (each is sorted by p)
   ## This function acts on "active_genesets"
@@ -731,7 +813,7 @@ term_enrichment_by_subset <- function( groups = NA, term_sources = term_sources.
 #' @export
 #' @examples
 #' require(RITANdata)
-#' e <- term_enrichment(vac1.day0vs31.de.genes, term_sources = 'GO_slim_generic')
+#' e <- term_enrichment(vac1.day0vs31.de.genes, resources = 'GO_slim_generic')
 #' plot(e, min_q = .1)
 #'
 plot.term_enrichment <- function( x = NA, min_q = 0.05, max_terms = 25, extend_mar = c(0,10,0,0), ... ){
@@ -1056,4 +1138,3 @@ summary.term_enrichment_by_subset <- function(object, verbose = TRUE, ...){
   
 }
 
-### --------------------------------------------------------------- -

@@ -40,7 +40,7 @@ We begin by gathering a starting list of gene symbols. In this example, we choos
 
 ```{r example1, echo=TRUE}
 my_genes <- geneset_list$MSigDB_C7[['GSE6269_HEALTHY_VS_FLU_INF_PBMC_DN']]
-net <- network_overlap( my_genes, Net2Use = 'HPRD' )
+net <- network_overlap( my_genes, resources = 'HPRD' )
 ```
 
 We now have what is referred to as the "induced subnetwork" for *my_genes* using only one resoure, HPRD. The network is the subset of interactions from HPRD that contains exclusively gene symbols within *my_genes*.
@@ -70,7 +70,7 @@ The edge type is taken from the network resource, when possible. For instance, t
 Some network resources provide confidence scores for each interaction. Most notably, the popular STRING resource has indexed many other resources and additionally included computationally inferred interactions. Thus, many of the interactions within STRING have not been experimentally validated. While that does not mean they are incorrect, depending on your application you may not be comfortable with including them. We provide a simple means for trimming resources that provide scores using a simple threshold.
 
 ```{r example2, echo=TRUE, eval=FALSE}
-net2 <- network_overlap( my_genes, Net2Use = c('HPRD','STRING'), minStringScore = 700 )
+net2 <- network_overlap( my_genes, resources = c('HPRD','STRING'), minStringScore = 700 )
 str(net2)
 ```
 
@@ -117,14 +117,14 @@ Because the previous example has a large number of genes, we will switch to a sm
 
 ```{r example3_1, echo=TRUE}
 my_genes <- geneset_list$MSigDB_C7[['GOLDRATH_NAIVE_VS_MEMORY_CD8_TCELL_UP']]
-net3.1 <- network_overlap( my_genes, Net2Use = 'PID',
+net3.1 <- network_overlap( my_genes, resources = 'PID',
                            include_neighbors = FALSE, dedup = TRUE )
 
 nets2use <- c('PID','dPPI','TFe','HumanNet','CCSB')
-net3.2 <- network_overlap( my_genes, Net2Use = nets2use,
+net3.2 <- network_overlap( my_genes, resources = nets2use,
                            include_neighbors = FALSE, dedup = TRUE )
 
-net3.3 <- network_overlap( my_genes, Net2Use = 'PID',
+net3.3 <- network_overlap( my_genes, resources = 'PID',
                            include_neighbors = TRUE, dedup = TRUE )
 ```
 
@@ -146,7 +146,7 @@ From the following example plot, we can identify HIF1-alpha as a hub gene within
 
 ```{r example4, fig.height = 5, fig.width = 5, fig.align = 'center' }
 require(igraph)
-net4 <- network_overlap( my_genes, Net2Use = c('PID','dPPI','TFe'),
+net4 <- network_overlap( my_genes, resources = c('PID','dPPI','TFe'),
                          include_neighbors = FALSE, dedup = TRUE )
 edges <- as.matrix( net4[, c(1,3)] )
 G <- igraph::make_undirected_graph( c(t(edges)) )
@@ -246,7 +246,7 @@ check_net_input( my_mouse, network_list[['BioGRID_Mouse']] )
 
 ## After correcting a few gene names, get the induced subnetwork from mouse data.
 my_mouse <- c('Sost','Fxyd4','Tmprss6','CRTAP','Thpo','KCNN4','Osm','Slc29a3','ALB')
-net.m <- network_overlap( my_mouse, include_neighbors = TRUE, Net2Use = c('BioGRID_Mouse') )
+net.m <- network_overlap( my_mouse, include_neighbors = TRUE, resources = c('BioGRID_Mouse') )
 str(net.m)
 # Generating undirected subnetwork...
 # Total induced subnetwork from 9 genes has 17 nodes and 17 edges (17 unique).
@@ -267,7 +267,7 @@ check_net_input( my_mouse, network_list[['BioGRID_Human']] )
 # "yes"    "no"    "no"   "yes"    "no"   "yes"   "yes"    "no"   "yes"
 
 ## Get the induced subnetowrk from human data
-net.h <- network_overlap( my_mouse, include_neighbors = TRUE, Net2Use = c('BioGRID_Human') )
+net.h <- network_overlap( my_mouse, include_neighbors = TRUE, resources = c('BioGRID_Human') )
 str(net.h)
 # Generating undirected subnetwork...
 # Total induced subnetwork from 9 genes has 224 nodes and 755 edges (634 unique).
@@ -289,7 +289,7 @@ From comparison of the above results, there are noticeable differences between u
 Between the two RITAN vignettes, you've seen how to use RITAN to perform term enrichment and to generate subnetworks leveraging multiple data sources. In the following example, we will start from a single gene of interest, gather the genes that it is known to physically interact with (protein-protein interaction; PPI), and then perform enrichment analysis on group of interacting genes/proteins.
 
 ```{r example8, echo=TRUE, eval=TRUE }
-net <- network_overlap( 'FOXP3', include_neighbors = TRUE, Net2Use = c("PID","dPPI","CCSB" ) )
+net <- network_overlap( 'FOXP3', include_neighbors = TRUE, resources = c("PID","dPPI","CCSB" ) )
 genes <- unique(c( net$p1, net$p2 ))
 e1 <- term_enrichment( genes, "Blood_Translaiton_Modules", verbose=FALSE, all_symbols = cached_coding_genes )
 summary(e1)

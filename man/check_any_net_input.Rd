@@ -4,12 +4,12 @@
 \alias{check_any_net_input}
 \title{check_any_net_input}
 \usage{
-check_any_net_input(set, Net2Use = names(network_list))
+check_any_net_input(set, resources = names(network_list))
 }
 \arguments{
 \item{set}{An input list of genes to check against references.}
 
-\item{Net2Use}{The collection of network resources to check within.}
+\item{resources}{The collection of network resources to check within.}
 }
 \value{
 Logical vector indicating if the genes in "set" are within ANY of the resources.

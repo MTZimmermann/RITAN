@@ -4,26 +4,26 @@
 \alias{network_overlap}
 \title{network_overlap}
 \usage{
-network_overlap(gene_list = NA, Net2Use = c("PID", "TFe", "dPPI", "HPRD",
+network_overlap(gene_list = NA, resources = c("PID", "TFe", "dPPI", "HPRD",
   "CCSB", "STRING"), minStringScore = 700, minHumanNetScore = 0.4,
-  minScore = 0, verbose = TRUE, dedup = FALSE, directed_net = FALSE,
+  minScore = 0, verbose = TRUE, dedup = TRUE, directed_net = FALSE,
   include_neighbors = FALSE, STRING_cache_directory = NA,
   STRING_species = 9606, STRING_version = "10", ProNet_species = "human")
 }
 \arguments{
 \item{gene_list}{A list of genes to use. The function will identify edges across resources for or among these genes; identify the induced subnetwork around the gene_list.}
 
-\item{Net2Use}{Name of network resource(s) to use.}
+\item{resources}{Name of network resource(s) to use.}
 
-\item{minStringScore}{If STRING is among the Net2Use, only edges of at least the indicated score will be included. Default = 150.}
+\item{minStringScore}{If STRING is among the resources, only edges of at least the indicated score will be included.}
 
-\item{minHumanNetScore}{If HumanNet is among the Net2Use, only edges of at least the indicated score will be included. Default = 0.4.}
+\item{minHumanNetScore}{If HumanNet is among the resources, only edges of at least the indicated score will be included.}
 
 \item{minScore}{Same as above, but used for any other networks where "score" is provided}
 
-\item{verbose}{If TRUE (default), the function will update the user on what it is doing and how many edges are identified for each resource in Net2Use.}
+\item{verbose}{If TRUE (default), the function will update the user on what it is doing and how many edges are identified for each resource.}
 
-\item{dedup}{If TRUE (Default = FALSE), remove edges reported by multiple resources. The edge type will be a semi-colon delimited list of the resources that had reported the interaction.}
+\item{dedup}{If TRUE (Default = TRUE), remove edges reported by multiple resources. The edge type will be a semi-colon delimited list of the resources that had reported the interaction.}
 
 \item{directed_net}{Logical indicating if the network resources should be interpreted as directed.}
 
@@ -47,7 +47,7 @@ network_overlap
 ## Get interactions among a list of genes from the PID: Pathway Interaction Database
 require(RITANdata)
 myGeneSet <- c('BRCA1','RAD51C','VAV1','HRAS','ABCC1','CYP1B1','CYP3A5')
-sif <- network_overlap( myGeneSet, Net2Use = 'PID')
+sif <- network_overlap( myGeneSet, resources = 'PID')
 print(sif)
 
 \dontrun{

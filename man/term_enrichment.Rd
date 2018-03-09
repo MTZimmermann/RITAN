@@ -4,14 +4,14 @@
 \alias{term_enrichment}
 \title{term_enrichment}
 \usage{
-term_enrichment(geneset, term_sources = term_sources.default,
+term_enrichment(geneset, resources = resources.default,
   report_resources_separately = FALSE, verbose = TRUE, all_symbols = NA,
   filter_to_intersection = FALSE, ...)
 }
 \arguments{
 \item{geneset}{vector of gene symbols to be evaluated}
 
-\item{term_sources}{list containing the reference gene sets to test for enrichment}
+\item{resources}{list containing the reference gene sets to test for enrichment}
 
 \item{report_resources_separately}{logical (default FALSE) flag to report enrichments seperately for each requested resource, or to combine them and produce FDR adjustment across the combined set}
 
@@ -38,7 +38,7 @@ print( e[1:2, -6] )
 
 \dontrun{
 term_enrichment(geneset = vac1.day0vs31.de.genes)
-term_enrichment(geneset = vac1.day0vs31.de.genes, term_sources = "MSigDB_Hallmarks")
+term_enrichment(geneset = vac1.day0vs31.de.genes, resources = "MSigDB_Hallmarks")
 vac1.day0v31.enrichment <- term_enrichment(geneset = vac1.day0vs31.de.genes, verbose = FALSE)
 }
 }
