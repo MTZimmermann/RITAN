@@ -1,7 +1,7 @@
 Package: RITAN
 Type: Package
 Title: Rapid Integration of Term Annotation and Network resources
-Version: 1.4.0
+Version: 1.5.0
 Author: Michael Zimmermann
 Maintainer: Michael Zimmermann <zimmermann.michael@mayo.edu>
 Description: Tools for comprehensive gene set enrichment and extraction of
