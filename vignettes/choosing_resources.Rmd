@@ -43,7 +43,7 @@ e2 <- network_overlap( genes, resources = c('PID','HumanNet','Biogrid') )
 
 # Example: Expression Signalling
 
-```{r geneset_overlap_M, echo=TRUE, eval=FALSE, warning=FALSE, fig.width = 7, fig.height = 7, fig.align='center'}
+```{r geneset_overlap_E, echo=TRUE, eval=FALSE, warning=FALSE, fig.width = 7, fig.height = 7, fig.align='center'}
 genes2 <- geneset_list$MSigDB_C5$AMINE_METABOLIC_PROCESS
 e2 <- network_overlap( genes, resources = c('ChEA','HumanNet') )
 ```
