@@ -809,7 +809,7 @@ term_enrichment_by_subset <- function( groups = NA, resources = resources.defaul
 #' @param extend_mar Term names can be long. We attempt to keep them readable by extending the left-hand-side margins automatically. Default = c(0,10,0,0) added to par()$mar.
 #' @param ... Additional arguments are passed on to plot()
 #' @return silent return from plot
-#' @import RITANdata
+#' @import RITANdata graphics stats utils gplots plotrix png
 #' @export
 #' @examples
 #' require(RITANdata)

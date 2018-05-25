@@ -7,6 +7,7 @@ vignette: >
   %\VignetteIndexEntry{Multi-Tissue Analysis}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{BgeeDB}
 ---
 
 In this vignette, we will analyze a gene expression dataset with samples from multiple tissues. We will:

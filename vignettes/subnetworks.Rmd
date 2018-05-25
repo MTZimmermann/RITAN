@@ -7,6 +7,7 @@ vignette: >
   %\VignetteIndexEntry{Network Biology Vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
+  %\VignetteDepends{knitr}
 ---
 
 <h1>Introduction</h1>

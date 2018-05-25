@@ -23,6 +23,7 @@
 #' @param ... Additional argumetns are passed on to the specific test performed
 #' 
 #' @export
+#' @return metrics and significance of the network overlap
 #' 
 #' @examples
 #' \dontrun{

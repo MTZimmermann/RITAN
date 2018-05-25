@@ -17,6 +17,9 @@ icon_test(n1 = NULL, n2 = NULL, s = 100, verbose = TRUE, ...)
 
 \item{...}{Additional argumetns are passed on to the specific test performed}
 }
+\value{
+metrics and significance of the network overlap
+}
 \description{
 "icon" is an abbreviation for the "interconnectivity" of a network or graph.
 }

@@ -312,7 +312,7 @@ check_any_net_input <- function(set, resources = names(network_list) ){
 #' @param ProNet_species Sepcies name (text) to use in searching HPRD and Biogrid data using ProNet. (Default = "human")
 #'
 #' @return Data table describing the induced subnetwork for "gene_list" across the requested resources.
-#' @import STRINGdb ProNet igraph
+#' @import STRINGdb ProNet igraph MCL linkcomm dynamicTreeCut sqldf gsubfn hash
 #' @export
 #'
 #' @examples
