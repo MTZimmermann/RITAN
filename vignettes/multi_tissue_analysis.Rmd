@@ -92,8 +92,8 @@ plot( e[ apply(e[, c(3:4)], 1, max) >= 12, ], cap=40, label_size_y = 8, wrap_y_l
 ## -------------------- -
 ## Network Interactions Within Each Tissue
 
-net_h <- network_overlap( top_heart, resources = c('HPRD','CCSB','dPPI','Biogrid','HumanNet') )
-net_s <- network_overlap( top_skele, resources = c('HPRD','CCSB','dPPI','Biogrid','HumanNet') )
+net_h <- network_overlap( top_heart, resources = c('CCSB','dPPI','HumanNet') )
+net_s <- network_overlap( top_skele, resources = c('CCSB','dPPI','HumanNet') )
 
 net2g <- function(x){
   edges <- as.matrix( x[, c(1,3)] )

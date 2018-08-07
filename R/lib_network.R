@@ -134,7 +134,7 @@ readSIF <- function( file = NA, header = FALSE, sep="\t", as.is=TRUE,
 #' yorn <- check_net_input( myGeneSet, network_list[["CCSB"]] )
 #' print(yorn)
 #' 
-#' yorn <- check_net_input( myGeneSet, network_list[["HPRD"]] )
+#' yorn <- check_net_input( myGeneSet, network_list[["PID"]] )
 #' print(yorn)
 #' 
 #' ## See check_any_net_input() for efficiently checking across all resources.
@@ -309,10 +309,9 @@ check_any_net_input <- function(set, resources = names(network_list) ){
 #' @param STRING_cache_directory A direcotry where STRING data files are cached to speed up subsequent queries; no need to re-download. If NA (the default), caches STRING data in your Rpackages directory. If "", uses a temporary directory that is cleared when the R-session closes.
 #' @param STRING_species Sepcies taxon ID (number) to use in searching STRING data. (Default = 9606)
 #' @param STRING_version Version of the STRING database (Default = "10")
-#' @param ProNet_species Sepcies name (text) to use in searching HPRD and Biogrid data using ProNet. (Default = "human")
 #'
 #' @return Data table describing the induced subnetwork for "gene_list" across the requested resources.
-#' @import STRINGdb ProNet igraph MCL linkcomm dynamicTreeCut sqldf gsubfn hash
+#' @import STRINGdb igraph MCL linkcomm dynamicTreeCut sqldf gsubfn hash
 #' @export
 #'
 #' @examples
@@ -325,9 +324,9 @@ check_any_net_input <- function(set, resources = names(network_list) ){
 #' \dontrun{
 #' ## Get the PPI network induced by genes within myGeneSet
 #' ## Use 4 seperate resources, but trim STRING to only include more confident interactions
-#' sif <- network_overlap( myGeneSet, c('dPPI','HPRD','CCSB','STRING'), minStringScore = 500 )
+#' sif <- network_overlap( myGeneSet, c('dPPI','PID','CCSB','STRING'), minStringScore = 500 )
 #' }
-network_overlap <- function( gene_list = NA, resources = c('PID','TFe','dPPI','HPRD','CCSB','STRING'),
+network_overlap <- function( gene_list = NA, resources = c('PID','TFe','dPPI','CCSB','STRING'),
                     
                     minStringScore = 700, # 7.8% have a score >= 0.7
                     minHumanNetScore = 0.4, # 0.5 ==> 84.8%, 1.0 ==> 44.7%, 1.5 ==> 25.8%, 2.0 ==> 12.9%, 2.5 ==> 6.6%, 3.0 ==> 3.0%
@@ -341,8 +340,6 @@ network_overlap <- function( gene_list = NA, resources = c('PID','TFe','dPPI','H
                     STRING_cache_directory = NA,
                     STRING_species = 9606,
                     STRING_version = "10",
-                    
-                    ProNet_species = "human"
                     
                     ) {
 
@@ -359,7 +356,7 @@ network_overlap <- function( gene_list = NA, resources = c('PID','TFe','dPPI','H
   
   
   ## 
-  supportedNetworks <- unique(c(names(network_list), 'STRING', 'HPRD', 'Biogrid'))
+  supportedNetworks <- unique(c(names(network_list), 'STRING' ))
   i <- (resources %in% supportedNetworks) | (file.exists(resources))
   if (any(!i)){
     w1 <- sprintf('  Unsupported Networks Requested: %s\n', paste(resources[!i], sep=',', collapse=',') )
@@ -551,63 +548,59 @@ network_overlap <- function( gene_list = NA, resources = c('PID','TFe','dPPI','H
   
   ## -------------------------- -
   ## Initiate loader for HPRD data
-  if ('HPRD' %in% resources){
-    if (requireNamespace("ProNet", quietly = TRUE)) {
-      #requireNamespace("ProNet")
-      #require(ProNet)
-      
-      hprd <- ProNet::construction(db="HPRD", ID.type= c("Gene symbol"), species = ProNet_species )
-      id.hprd.match <- match( gene_list, V(hprd)$name )
-      v <- id.hprd.match[ !is.na(id.hprd.match) ]
-      g.hprd <- induced.subgraph(hprd, v)
-      
-      if (include_neighbors){
-        n <- unique(unlist(sapply( v, function(x){ as.numeric(neighbors(hprd,x)) })))
-        g.hprd <- induced.subgraph(hprd, unique(c(v, as.numeric(n))))
-      }
-      
-      i <- get.edgelist(g.hprd, names=TRUE)
-      
-      sif <- rbind( sif, data.frame( p1 = as.character( i[, 1]),
-                                     edge_type = rep('HPRD', dim(i)[1] ),
-                                     p2 = as.character( i[, 2] ), stringsAsFactors=FALSE
-                                     ))
-    } else {
-      stop('HPRD was requested, but the required package ProNet was not found by requireNamespace...')
-    }
-    
-  }
+  #if ('HPRD' %in% resources){
+  #  if (requireNamespace("ProNet", quietly = TRUE)) {
+  #    
+  #    hprd <- ProNet::construction(db="HPRD", ID.type= c("Gene symbol"), species = ProNet_species )
+  #    id.hprd.match <- match( gene_list, V(hprd)$name )
+  #    v <- id.hprd.match[ !is.na(id.hprd.match) ]
+  #    g.hprd <- induced.subgraph(hprd, v)
+  #    
+  #    if (include_neighbors){
+  #      n <- unique(unlist(sapply( v, function(x){ as.numeric(neighbors(hprd,x)) })))
+  #      g.hprd <- induced.subgraph(hprd, unique(c(v, as.numeric(n))))
+  #    }
+  #    
+  #    i <- get.edgelist(g.hprd, names=TRUE)
+  #    
+  #    sif <- rbind( sif, data.frame( p1 = as.character( i[, 1]),
+  #                                   edge_type = rep('HPRD', dim(i)[1] ),
+  #                                   p2 = as.character( i[, 2] ), stringsAsFactors=FALSE
+  #                                   ))
+  #  } else {
+  #    stop('HPRD was requested, but the required package ProNet was not found by requireNamespace...')
+  #  }
+  #  
+  #}
   
   ## -------------------------- -
   ## Initiate loader for BioGrid data
-  if ('Biogrid' %in% resources){
-    if (requireNamespace("ProNet", quietly = TRUE)) {
-      #requireNamespace("ProNet")
-      #require(ProNet)
-      
-      biog <- ProNet::construction(db="Biogrid",ID.type= c("Gene symbol"), species = ProNet_species )
-      
-      id.biog.match <- match( gene_list, V(biog)$name )
-      v <- id.biog.match[ !is.na(id.biog.match) ]
-      g.biog <- induced.subgraph(biog, v)
-      
-      if (include_neighbors){
-        n <- unique(unlist(sapply( v, function(x){ as.numeric(neighbors(biog,x)) })))
-        g.biog <- induced.subgraph(biog, unique(c(v, as.numeric(n))))
-      }
-      
-      i <- get.edgelist(g.biog, names=TRUE)
-      
-      sif <- rbind( sif, data.frame( p1 = as.character( i[, 1] ),
-                                     edge_type = rep('Biogrid', dim(i)[1] ),
-                                     p2 = as.character( i[, 2] ), stringsAsFactors=FALSE
-                                     ))
-      
-    } else {
-      stop('Biogrid was requested, but the required package ProNet was not found by requireNamespace...')
-    }
-    
-  }
+  #if ('Biogrid' %in% resources){
+  #  if (requireNamespace("ProNet", quietly = TRUE)) {
+  #    
+  #    biog <- ProNet::construction(db="Biogrid",ID.type= c("Gene symbol"), species = ProNet_species )
+  #    
+  #    id.biog.match <- match( gene_list, V(biog)$name )
+  #    v <- id.biog.match[ !is.na(id.biog.match) ]
+  #    g.biog <- induced.subgraph(biog, v)
+  #    
+  #    if (include_neighbors){
+  #      n <- unique(unlist(sapply( v, function(x){ as.numeric(neighbors(biog,x)) })))
+  #      g.biog <- induced.subgraph(biog, unique(c(v, as.numeric(n))))
+  #    }
+  #    
+  #    i <- get.edgelist(g.biog, names=TRUE)
+  #    
+  #    sif <- rbind( sif, data.frame( p1 = as.character( i[, 1] ),
+  #                                   edge_type = rep('Biogrid', dim(i)[1] ),
+  #                                   p2 = as.character( i[, 2] ), stringsAsFactors=FALSE
+  #                                   ))
+  #    
+  #  } else {
+  #    stop('Biogrid was requested, but the required package ProNet was not found by requireNamespace...')
+  #  }
+  #  
+  #}
   
   ## -------------------------- -
   ## Read in user-supplied SIF files (assumes SIF file format)
@@ -717,8 +710,7 @@ network_overlap <- function( gene_list = NA, resources = c('PID','TFe','dPPI','H
                                    'include_neighbors' = include_neighbors,
                                    'STRING_cache_directory' = STRING_cache_directory,
                                    'STRING_species' = STRING_species,
-                                   'STRING_version' = STRING_version,
-                                   'ProNet_species' = ProNet_species
+                                   'STRING_version' = STRING_version
                                    )
   
   ## done

@@ -1,7 +1,7 @@
 Package: RITAN
 Type: Package
 Title: Rapid Integration of Term Annotation and Network resources
-Version: 1.5.2
+Version: 1.5.3
 Author: Michael Zimmermann
 Maintainer: Michael Zimmermann <mtzimmermann@mcw.edu>
 Description: Tools for comprehensive gene set enrichment and extraction of
@@ -10,7 +10,6 @@ Description: Tools for comprehensive gene set enrichment and extraction of
 LazyData: TRUE
 Depends:
     R (>= 3.4),
-    ProNet
 Imports:
     graphics,
     stats,
