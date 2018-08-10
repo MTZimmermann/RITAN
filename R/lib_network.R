@@ -339,7 +339,7 @@ network_overlap <- function( gene_list = NA, resources = c('PID','TFe','dPPI','C
                     
                     STRING_cache_directory = NA,
                     STRING_species = 9606,
-                    STRING_version = "10",
+                    STRING_version = "10"
                     
                     ) {
 
