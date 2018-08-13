@@ -4,11 +4,11 @@
 \alias{network_overlap}
 \title{network_overlap}
 \usage{
-network_overlap(gene_list = NA, resources = c("PID", "TFe", "dPPI", "HPRD",
-  "CCSB", "STRING"), minStringScore = 700, minHumanNetScore = 0.4,
-  minScore = 0, verbose = TRUE, dedup = TRUE, directed_net = FALSE,
+network_overlap(gene_list = NA, resources = c("PID", "TFe", "dPPI", "CCSB",
+  "STRING"), minStringScore = 700, minHumanNetScore = 0.4, minScore = 0,
+  verbose = TRUE, dedup = TRUE, directed_net = FALSE,
   include_neighbors = FALSE, STRING_cache_directory = NA,
-  STRING_species = 9606, STRING_version = "10", ProNet_species = "human")
+  STRING_species = 9606, STRING_version = "10")
 }
 \arguments{
 \item{gene_list}{A list of genes to use. The function will identify edges across resources for or among these genes; identify the induced subnetwork around the gene_list.}
@@ -34,8 +34,6 @@ network_overlap(gene_list = NA, resources = c("PID", "TFe", "dPPI", "HPRD",
 \item{STRING_species}{Sepcies taxon ID (number) to use in searching STRING data. (Default = 9606)}
 
 \item{STRING_version}{Version of the STRING database (Default = "10")}
-
-\item{ProNet_species}{Sepcies name (text) to use in searching HPRD and Biogrid data using ProNet. (Default = "human")}
 }
 \value{
 Data table describing the induced subnetwork for "gene_list" across the requested resources.
@@ -53,6 +51,6 @@ print(sif)
 \dontrun{
 ## Get the PPI network induced by genes within myGeneSet
 ## Use 4 seperate resources, but trim STRING to only include more confident interactions
-sif <- network_overlap( myGeneSet, c('dPPI','HPRD','CCSB','STRING'), minStringScore = 500 )
+sif <- network_overlap( myGeneSet, c('dPPI','PID','CCSB','STRING'), minStringScore = 500 )
 }
 }

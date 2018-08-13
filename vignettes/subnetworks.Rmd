@@ -22,7 +22,7 @@ require(knitr)
 ```
 
 The R object, *network_list*, contains `r length(network_list)` human network-biology resources. Additionally, RITAN leverages existing R packages to access data from STRING.
-[In 08-2018, ProNet was depricated and internal support for HPRD and BioGRID APIs lost. We have moved both of these resources to the recommended setup scritp.].
+[In 08-2018, ProNet was depricated and internal support for HPRD and BioGRID using ProNet APIs was lost. We have added to our recommended setup script, instructions for adding both of these resources to RITAN.].
 Citation information for each resource can be accessed via attr():
 ```{r citation, echo=TRUE}
 kable( attr(network_list, 'network_data_sources') )

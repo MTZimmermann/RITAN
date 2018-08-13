@@ -32,7 +32,7 @@ myGeneSet <- c('BRCA1','RAD51C','VAV1','HRAS','ABCC1','CYP1B1','CYP3A5')
 yorn <- check_net_input( myGeneSet, network_list[["CCSB"]] )
 print(yorn)
 
-yorn <- check_net_input( myGeneSet, network_list[["HPRD"]] )
+yorn <- check_net_input( myGeneSet, network_list[["PID"]] )
 print(yorn)
 
 ## See check_any_net_input() for efficiently checking across all resources.
