@@ -29,8 +29,9 @@ library(RITAN)
 # Install the Bgee package. GO.db is a dependency of a dependency and may need to be installed seperately.
 for (pkg in c('GO.db','BgeeDB','biomaRt')){
   if (! (pkg %in% rownames(installed.packages()) )){
-    source("https://bioconductor.org/biocLite.R")
-    biocLite(pkg)
+    if (!requireNamespace("BiocManager", quietly=TRUE))
+        install.packages("BiocManager")
+    BiocManager::install(pkg)
   }
   library(pkg, character.only = TRUE)
 }
