@@ -1,7 +1,7 @@
 # RITAN
 RITAN is an R package for Rapid Integration of Term Annotation and Network resources.
 
-RITAN brings together multiple resources to help answer two questions:
+RITAN brings together multiple resources, primarily to help answer two questions:
 
 1. "What functions are achieved by this group of genes?"
 2. "How do these genes work together to achieve that function?"
@@ -24,7 +24,12 @@ We have also built RITAN to facilitate research questions such as:
 
 RITAN is to be applied to an unranked list of gene symbols and we perform false-discivery adjustment across all resources used. We encourage users to decide upon an analysis strategy prior to running their analysis, including consideration of which resources are most appropriate for their dataset/experiment, statistical significance thresholds, background geneset, etc. The ease with which RITAN facilitates multi-resource query may lead users to "try one more test," leading to an increased number of hypothesis tests made that may not be accounted for by multiple testing correction. To prevent this, we encourage users to "include one more resource" - to add an additional resource to a single query in RITAN so that false-dicovery correction is appropriately maintained.
 
-For additional examples of RITAN use, see our vignettes:
+These and other topics are discussed in our publication:
+<ul>
+<li>Zimmermann, M.T. <i>et al.</i> RITAN: Rapid Integration of Term Annotation and Network Resources. <i>in review</i>.</li>
+</ul>
+
+For additional examples of using RITAN, see our vignettes:
 
 * `vignette('enrichment',package='RITAN')`
 * `vignette('subnetworks',package='RITAN')`
@@ -34,13 +39,18 @@ For additional examples of RITAN use, see our vignettes:
 
 <hr>
 
-<b>Bringing More Data into RITAN</b>
+# Bringing More Data into RITAN
+
+I make an R script that has all my setup within. That way, I can simply `source('~/setup_RITAN.R')` and I'm ready to go. If you use RITAN frequently, I suggest writing the `source()` command in your `.Rprofile`. Below, are excerpts from my setup script.
 
 To honor data redistribution policies, we provide certain annotation and network data in the RITANdata package. RITAN is most useful when many resources are organized for use. In my lab, we have many genesets, gene panels, pathway resources, gene regulatory networks, etc. organized and loaded into RITAN.
 
 As a middle-ground, we provide here recommendations for downloading other resources and excerpts from my resrouce loading script for adding them to RITAN. Eventually, we plan to add a setup() function to RITAN that would automate this process. For now, we hope the below examples are helpful to users. We welcome feedback on the package and how to work more efficiently with existing open-source solutions.
 
 ```{r eval=FALSE, echo=TRUE, tidy=TRUE}
+require(RITANdata)
+require(RITAN)
+
 ## -------------------------------- -
 ## Set a couple of utility functions
 
