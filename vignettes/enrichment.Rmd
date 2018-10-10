@@ -203,7 +203,7 @@ Lymphoma, Non-Hodgkin	        umls:C0024305	 CSF2   CSF3	  CYP2E1
 
 Now, run the term enrichment for disease association.
 ```{r term_enrichment_provided_gmt, echo=TRUE}
-e2  <- term_enrichment( gs, resources = gmt )
+e2  <- term_enrichment( gs, resources = gmt, all_symbols = cached_coding_genes )
 print( e2[1:3,-5] )
 ```
 
