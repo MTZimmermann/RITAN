@@ -39,6 +39,16 @@ For additional examples of using RITAN, see our vignettes:
 
 <hr>
 
+## For users interested in using RITAN, but who do not use R
+
+We have made a standalone and self-contained executable available here:
+https://mcw.box.com/s/bzmt12bgj2uygvcw6bk0hpg4p4w7nm2g
+To use the app, download the .zip file, extract the zip file, and double-click the file, RITAN-electon.exe.
+
+The standalone app uses Chromium-electron and stand-alone R packaged together using node.js.
+
+<hr>
+
 # Bringing More Data into RITAN
 
 I make an R script that has all my setup within. That way, I can simply `source('~/setup_RITAN.R')` and I'm ready to go. If you use RITAN frequently, I suggest writing the `source()` command in your `.Rprofile`. Below, are excerpts from my setup script.
