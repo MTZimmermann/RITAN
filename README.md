@@ -45,7 +45,10 @@ We have made a standalone and self-contained executable available here:
 https://mcw.box.com/s/bzmt12bgj2uygvcw6bk0hpg4p4w7nm2g
 To use the app, download the .zip file, extract the zip file, and double-click the file, RITAN-electon.exe.
 
+<br>
 The standalone app uses Chromium-electron and stand-alone R packaged together using node.js.
+<br>
+For making the combination of Shiny, RPortable, and electron, thank you to: https://github.com/ksasso/Electron_ShinyApp_Deployment
 
 <hr>
 
