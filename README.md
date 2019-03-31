@@ -45,7 +45,11 @@ We have made a standalone and self-contained executable available here:
 https://mcw.box.com/s/bzmt12bgj2uygvcw6bk0hpg4p4w7nm2g
 To use the app, download the .zip file, extract the zip file, and double-click the file, RITAN-electon.exe.
 
-<br>
+<p align="center">
+  <img src="https://mcw.box.com/s/6y76mb22b06ovs3nxjocjz16al07o3up" width="350" title="Format for Group Comparison">
+  <img src="https://mcw.box.com/s/zf3uqabksziu89uplabs2psnyonxfqwa" width="350" alt="Expected Result" title="Expected Result">
+</p>
+
 The standalone app uses Chromium-electron and stand-alone R packaged together using node.js.
 <br>
 For making the combination of Shiny, RPortable, and electron, thank you to: https://github.com/ksasso/Electron_ShinyApp_Deployment
