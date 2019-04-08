@@ -22,7 +22,8 @@ We have also built RITAN to facilitate research questions such as:
 
 <hr>
 
-RITAN is to be applied to an unranked list of gene symbols and we perform false-discivery adjustment across all resources used. We encourage users to decide upon an analysis strategy prior to running their analysis, including consideration of which resources are most appropriate for their dataset/experiment, statistical significance thresholds, background geneset, etc. The ease with which RITAN facilitates multi-resource query may lead users to "try one more test," leading to an increased number of hypothesis tests made that may not be accounted for by multiple testing correction. To prevent this, we encourage users to "include one more resource" - to add an additional resource to a single query in RITAN so that false-dicovery correction is appropriately maintained.
+RITAN is to be applied to an unranked list of gene symbols and we perform false-discivery adjustment across all resources used.
+See our vignettes and publication for more details; "We encourage users to decide upon an analysis strategy prior to running their analysis, including consideration of which resources are most appropriate for their dataset/experiment, statistical significance thresholds, background geneset, etc. The ease with which RITAN facilitates multi-resource query may lead users to 'try one more test,' leading to an increased number of hypothesis tests made that may not be accounted for by multiple testing correction. To prevent this, we encourage users to 'include one more resource' - to add an additional resource to a single query in RITAN so that false-dicovery correction is appropriately maintained." ~ Kennedy et al., in review.
 
 These and other topics are discussed in our publication:
 <ul>
