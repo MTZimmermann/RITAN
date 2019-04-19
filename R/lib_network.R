@@ -251,9 +251,10 @@ check_any_net_input <- function(set, resources = names(network_list) ){
 #       stop('Please provide a list of genes, either as HGNC symbols or enterz IDs (set symbols=FALSE).')
 #     }
 # 
-#     # source("https://bioconductor.org/biocLite.R")
-#     # biocLite("GOSemSim")
-#     # biocLite("org.Hs.eg.db")
+#     # if (!requireNamespace("BiocManager", quietly=TRUE))
+    #     # install.packages("BiocManager")
+#     # BiocManager::install("GOSemSim")
+#     # BiocManager::install("org.Hs.eg.db")
 #     require(GOSemSim)
 #     ## If you use GOSemSim in published research, please cite: G Yu, F Li, Y Qin, X Bo, Y Wu, S Wang.
 #     ##   GOSemSim: an R package for measuring semantic similarity among GO terms and gene products. Bioinformatcs 2010, 26(7):976-978.
