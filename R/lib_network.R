@@ -1,3 +1,6 @@
+if(getRversion() >= "2.15.1"){
+  utils::globalVariables( names=c('all_net', 'network_list'), package='RITAN')
+}
 
 #' as.graph
 #'

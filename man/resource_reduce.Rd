@@ -13,8 +13,6 @@ resource_reduce(genesets = NULL, min_overlap = 0.8, verbose = TRUE)
 \item{min_overlap}{terms that share at least this fraction of genes will be merged}
 
 \item{verbose}{if TRUE, print status and summary output}
-
-\item{mutual_overlap}{[TO DO; FEATURE NOT IMPLEMENTED] if TRUE, the overlap must be reciprocal in order to merge}
 }
 \value{
 the list of terms, after merging to reduce redundnat and semi-redundant terms

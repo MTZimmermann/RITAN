@@ -4,14 +4,14 @@
 \alias{icon_test}
 \title{icon_test}
 \usage{
-icon_test(n1 = NULL, n2 = NULL, s = 100, verbose = TRUE, ...)
+icon_test(nodes1 = NULL, nodes2 = NULL, s = 100, verbose = TRUE, ...)
 }
 \arguments{
-\item{n1}{[NULL] the first network. See network_overlap().}
+\item{nodes1}{[NULL] the first network. See network_overlap().}
 
-\item{n2}{[NULL] the second network. See network_overlap().}
+\item{nodes2}{[NULL] the second network. See network_overlap().}
 
-\item{s}{[100] teh number of random permutations to make.}
+\item{s}{[100] the number of random permutations to make.}
 
 \item{verbose}{[TRUE] If optional text describing what the algorithm is doing should be shown in the console.}
 
@@ -24,13 +24,13 @@ metrics and significance of the network overlap
 "icon" is an abbreviation for the "interconnectivity" of a network or graph.
 }
 \details{
-This function handles different inputs and directs them to the appropriate "icon" testing method. Depending on the values given to "n1" and "n2," a different specific test is performed.
+This function handles different inputs and directs them to the appropriate "icon" testing method. Depending on the values given to "nodes1" and "nodes2," a different specific test is performed.
 
-Note that the specific functions called make use of the "param" attribute of each input. These parameters are populated by network_overlap() so that the permutation reflects the exact procedure that was done to generate "n1" and/or "n2."
+Note that the specific functions called make use of the "param" attribute of each input. These parameters are populated by network_overlap() so that the permutation reflects the exact procedure that was done to generate "nodes1" and/or "nodes2."
 }
 \examples{
 \dontrun{
-icon_test( n1=n, s=10)
+icon_test( nodes1=n, s=10)
 }
 
 }

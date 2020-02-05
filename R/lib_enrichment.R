@@ -1,6 +1,9 @@
 ### TO IMPLEMENT
 ## - distributional test between random netowrks and a bootstrapped estimate from your data better than current interconnectivity test? (would just be a more confident estimate of observation)
 
+if(getRversion() >= "2.15.1"){
+  utils::globalVariables( names=c('active_genesets', 'all_symbols', 'geneset_list'), package='RITAN')
+}
 resources.default = c("GO", "ReactomePathways", "KEGG_filtered_canonical_pathways", "MSigDB_Hallmarks")
 
 ### --------------------------------------------------------------- -
@@ -214,7 +217,7 @@ load_geneset_symbols <- function( gmt = NA, gmt_dir = '', verbose = TRUE ){
     fc <- file.exists(gmt) | file.exists(sprintf('%s/%s', gmt_dir, gmt)) # file check
     nc <- gmt %in% names(geneset_list) # name check
 
-    if (any(!(fc|nc))){
+    if (any(!( fc | nc ))){
       stop(sprintf('some resources were not recognized:\n%s', gmt[ !(fc|nc) ]))
     }
 
@@ -227,7 +230,7 @@ load_geneset_symbols <- function( gmt = NA, gmt_dir = '', verbose = TRUE ){
         ## Load the indicated file
         this.f <- gmt[i]
         if (!file.exists(this.f)){
-          this.f <- paste0( gmt_dir, '/', f )
+          this.f <- paste0( gmt_dir, '/', this.f )
         }
         res[[i]] <- readGMT(this.f)
 
@@ -243,23 +246,21 @@ load_geneset_symbols <- function( gmt = NA, gmt_dir = '', verbose = TRUE ){
     sets <- do.call( c, res )
 
   }
-
-
-
+  
   if ( (length(sets) == 0) && all(is.null(sets)) ){
     stop('No genesets loaded. Please check that your requested genesets are either:
          1) "%in% names(geneset_list)"
          2) are valid .gmt format files.'
          )
   }
-
+  
   ## ---------------------------------- -
   ## load the gene set into global environment
   assign("active_genesets", sets, envir = .GlobalEnv)
   if (verbose){
     cat(sprintf( '\n\tLoaded %d genesets.\n', length(active_genesets) ))
   }
-
+  
   # return() # omit explicit call to avoid the NULL print
 
 }
@@ -541,7 +542,6 @@ geneset_overlap <- function( s1, s2 = s1, #threshold = 0.5,
 #' @param genesets the input genesets to consider. May be from one or multiple resources.
 #' @param min_overlap terms that share at least this fraction of genes will be merged
 #' @param verbose if TRUE, print status and summary output 
-#' @param mutual_overlap [TO DO; FEATURE NOT IMPLEMENTED] if TRUE, the overlap must be reciprocal in order to merge
 #' 
 #' @return the list of terms, after merging to reduce redundnat and semi-redundant terms
 #' @export
@@ -809,8 +809,11 @@ term_enrichment_by_subset <- function( groups = NA, resources = resources.defaul
 #' @param extend_mar Term names can be long. We attempt to keep them readable by extending the left-hand-side margins automatically. Default = c(0,10,0,0) added to par()$mar.
 #' @param ... Additional arguments are passed on to plot()
 #' @return silent return from plot
-#' @import RITANdata graphics stats utils gplots plotrix png
+#' @import RITANdata graphics utils gplots png
+#' @rawNamespace import(plotrix, except=c('plotCI'))
+#' @rawNamespace import(stats, except=c('decompose','lowess','spectrum'))
 #' @export
+#' 
 #' @examples
 #' require(RITANdata)
 #' e <- term_enrichment(vac1.day0vs31.de.genes, resources = 'GO_slim_generic')
@@ -955,9 +958,15 @@ plot.term_enrichment_by_subset <- function( x, show_values = TRUE,
 
 
   ## make ggplot2 compatible
-  dat <- reshape2::melt( mat )
+  #dat <- reshape2::melt( mat )
+  #levels(dat$Var1) <- rownames(mat)
+  #levels(dat$Var2) <- colnames(mat)
+  
+  ## make ggplot2 compatible - updated
+  dat <- reshape2::melt( mat, varnames=c('Var1', 'Var2') )
   levels(dat$Var1) <- rownames(mat)
   levels(dat$Var2) <- colnames(mat)
+  
   ## It would be nice to add a >= sign to the legend...
   #if ( show_values & (!all(is.na(cap))) & (class(cap) == 'numeric') ){
   #  dat$value[ dat$value == cap ] <- sprintf( '\u2265%f', dat$value )
