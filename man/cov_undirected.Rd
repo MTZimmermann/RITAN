@@ -3,7 +3,7 @@
 \name{cov_undirected}
 \alias{cov_undirected}
 \title{cov_undirected
-function to show the un-directed coverabe between two nodes lists, from two networks}
+function to show the un-directed coverabe between two nodes lists from two networks}
 \usage{
 cov_undirected(this_nodes1, this_nodes2, this_net1, this_net2)
 }
@@ -18,5 +18,5 @@ cov_undirected(this_nodes1, this_nodes2, this_net1, this_net2)
 }
 \description{
 cov_undirected
-function to show the un-directed coverabe between two nodes lists, from two networks
+function to show the un-directed coverabe between two nodes lists from two networks
 }

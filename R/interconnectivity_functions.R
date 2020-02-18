@@ -2,14 +2,16 @@
 #' 
 #' "icon" is an abbreviation for the "interconnectivity" of a network or graph.
 #' 
-#' This function handles different inputs and directs them to the appropriate "icon" testing method. Depending on the values given to "nodes1" and "nodes2," a different specific test is performed.
+#' This function handles different inputs and directs them to the appropriate "icon" testing method.
+#' Depending on the values given to "nodes1" and "nodes2," a different specific test is performed.
 #' 
-#' Note that the specific functions called make use of the "param" attribute of each input. These parameters are populated by network_overlap() so that the permutation reflects the exact procedure that was done to generate "nodes1" and/or "nodes2."
+#' Note that the specific functions called make use of the "param" attribute of each input.
+#' These parameters are populated by network_overlap() so that the permutation reflects the exact procedure that was done to generate "nodes1" and/or "nodes2."
 #' 
 #' @param nodes1 [NULL] the first network. See network_overlap().
 #' @param nodes2 [NULL] the second network. See network_overlap().
 #' @param s [100] the number of random permutations to make.
-#' @param verbose [TRUE] If optional text describing what the algorithm is doing should be shown in the console.
+#' @param verbose [TRUE] Extent of text shown in the console.
 #' @param ... Additional argumetns are passed on to the specific test performed
 #' 
 #' @export
@@ -22,7 +24,7 @@
 #' 
 icon_test <- function( nodes1 = NULL, nodes2 = NULL, s=100, verbose=TRUE, ... ){
   
-  stop('TO DO: update all tests to use the cached parameters from each network_overlap() result')
+  stop('TO DO: update all tests to use parameters from network_overlap() results')
   param1 <- attr(nodes1,'param')
   
   test_mode <- 'dual_between'
@@ -34,10 +36,10 @@ icon_test <- function( nodes1 = NULL, nodes2 = NULL, s=100, verbose=TRUE, ... ){
   o <- NULL
   if ( all(is.null(nodes2)) || all(is.na(nodes2)) ){
 
-    if (class(nodes1) == 'character'){
+    if (is(nodes1, 'character')){
       test_mode <- 'single_within'
       o <- icon_single_within( nodes1, s )
-    } else if (class(nodes1) == 'list'){
+    } else if (is(nodes1, 'list')){
       test_mode <- 'list_between'
       o <- icon_list_between( nodes1, s, verbose=verbose, ... )
     }
@@ -52,7 +54,7 @@ icon_test <- function( nodes1 = NULL, nodes2 = NULL, s=100, verbose=TRUE, ... ){
 }
 
 #' cov_undirected
-#' function to show the un-directed coverabe between two nodes lists, from two networks
+#' function to show the un-directed coverabe between two nodes lists from two networks
 #' @param this_nodes1 list of nodes for first network
 #' @param this_nodes2 list of nodes for second network
 #' @param this_net1 the first network

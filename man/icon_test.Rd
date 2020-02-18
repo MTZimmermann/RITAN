@@ -13,7 +13,7 @@ icon_test(nodes1 = NULL, nodes2 = NULL, s = 100, verbose = TRUE, ...)
 
 \item{s}{[100] the number of random permutations to make.}
 
-\item{verbose}{[TRUE] If optional text describing what the algorithm is doing should be shown in the console.}
+\item{verbose}{[TRUE] Extent of text shown in the console.}
 
 \item{...}{Additional argumetns are passed on to the specific test performed}
 }
@@ -24,9 +24,11 @@ metrics and significance of the network overlap
 "icon" is an abbreviation for the "interconnectivity" of a network or graph.
 }
 \details{
-This function handles different inputs and directs them to the appropriate "icon" testing method. Depending on the values given to "nodes1" and "nodes2," a different specific test is performed.
+This function handles different inputs and directs them to the appropriate "icon" testing method.
+Depending on the values given to "nodes1" and "nodes2," a different specific test is performed.
 
-Note that the specific functions called make use of the "param" attribute of each input. These parameters are populated by network_overlap() so that the permutation reflects the exact procedure that was done to generate "nodes1" and/or "nodes2."
+Note that the specific functions called make use of the "param" attribute of each input.
+These parameters are populated by network_overlap() so that the permutation reflects the exact procedure that was done to generate "nodes1" and/or "nodes2."
 }
 \examples{
 \dontrun{

@@ -194,12 +194,12 @@ gmt <- system.file("extdata", "curated_gene_disease_associations.gmt.gz", packag
 
 The format of the gmt file is a simple tab-delimited style where the first column is the term name, the second is a reference to its origin, and all columns following are the genes associated with that term.
 
- Disease                      Source         Gene1  Gene2    Gene3...
+ Disease                      Source         Gene1  Gene2   Gene3...
 --------                      ------         -----  ------  -------
-Dermatitis, Allergic Contact	umls:C0162820  NAMPT  CALCRL	IGSF6
-Hyperlipoproteinemia Type II	umls:C0020445  CETP   ABCA1	  EPHX2
-Disease Progression	          umls:C0242656	 CDH2   ABCF2	  TRAP1
-Lymphoma, Non-Hodgkin	        umls:C0024305	 CSF2   CSF3	  CYP2E1
+Dermatitis, Allergic Contact  umls:C0162820  NAMPT  CALCRL  IGSF6
+Hyperlipoproteinemia Type II  umls:C0020445  CETP   ABCA1   EPHX2
+Disease Progression           umls:C0242656  CDH2   ABCF2   TRAP1
+Lymphoma, Non-Hodgkin         umls:C0024305  CSF2   CSF3    CYP2E1
 
 Now, run the term enrichment for disease association.
 ```{r term_enrichment_provided_gmt, echo=TRUE}
@@ -243,23 +243,23 @@ e <- term_enrichment( gs, resources = c('GO','LDL') )
 
 
 # References
-1.	Ashburner M, Ball CA, Blake JA, Botstein D, Butler H, Cherry JM, Davis AP, Dolinski K, Dwight SS, Eppig JT et al: Gene ontology: tool for the unification of biology. The Gene Ontology Consortium. Nat Genet 2000, 25(1):25-29.
+1. Ashburner M, Ball CA, Blake JA, Botstein D, Butler H, Cherry JM, Davis AP, Dolinski K, Dwight SS, Eppig JT et al: Gene ontology: tool for the unification of biology. The Gene Ontology Consortium. Nat Genet 2000, 25(1):25-29.
 
-2.	Schaefer CF, Anthony K, Krupa S, Buchoff J, Day M, Hannay T, Buetow KH: PID: the Pathway Interaction Database. Nucleic Acids Res 2009, 37(Database issue):D674-679.
+2. Schaefer CF, Anthony K, Krupa S, Buchoff J, Day M, Hannay T, Buetow KH: PID: the Pathway Interaction Database. Nucleic Acids Res 2009, 37(Database issue):D674-679.
 
-3.	Kanehisa M, Goto S: KEGG: kyoto encyclopedia of genes and genomes. Nucleic Acids Res 2000, 28(1):27-30.
+3. Kanehisa M, Goto S: KEGG: kyoto encyclopedia of genes and genomes. Nucleic Acids Res 2000, 28(1):27-30.
 
-4.	Kanehisa M, Goto S, Sato Y, Furumichi M, Tanabe M: KEGG for integration and interpretation of large-scale molecular data sets. Nucleic Acids Res 2012, 40(Database issue):D109-114.
+4. Kanehisa M, Goto S, Sato Y, Furumichi M, Tanabe M: KEGG for integration and interpretation of large-scale molecular data sets. Nucleic Acids Res 2012, 40(Database issue):D109-114.
 
-5.	Croft D, O'Kelly G, Wu G, Haw R, Gillespie M, Matthews L, Caudy M, Garapati P, Gopinath G, Jassal B et al: Reactome: a database of reactions, pathways and biological processes. Nucleic Acids Res 2011, 39(Database issue):D691-697.
+5. Croft D, O'Kelly G, Wu G, Haw R, Gillespie M, Matthews L, Caudy M, Garapati P, Gopinath G, Jassal B et al: Reactome: a database of reactions, pathways and biological processes. Nucleic Acids Res 2011, 39(Database issue):D691-697.
 
-6.	Cerami EG, Gross BE, Demir E, Rodchenkov I, Babur O, Anwar N, Schultz N, Bader GD, Sander C: Pathway Commons, a web resource for biological pathway data. Nucleic Acids Res 2011, 39(Database issue):D685-690.
+6. Cerami EG, Gross BE, Demir E, Rodchenkov I, Babur O, Anwar N, Schultz N, Bader GD, Sander C: Pathway Commons, a web resource for biological pathway data. Nucleic Acids Res 2011, 39(Database issue):D685-690.
 
-7.	Subramanian A, Tamayo P, Mootha VK, Mukherjee S, Ebert BL, Gillette MA, Paulovich A, Pomeroy SL, Golub TR, Lander ES et al: Gene set enrichment analysis: a knowledge-based approach for interpreting genome-wide expression profiles. Proc Natl Acad Sci U S A 2005, 102(43):15545-15550.
+7. Subramanian A, Tamayo P, Mootha VK, Mukherjee S, Ebert BL, Gillette MA, Paulovich A, Pomeroy SL, Golub TR, Lander ES et al: Gene set enrichment analysis: a knowledge-based approach for interpreting genome-wide expression profiles. Proc Natl Acad Sci U S A 2005, 102(43):15545-15550.
 
-8.	Chaussabel D, Quinn C, Shen J, Patel P, Glaser C, Baldwin N, Stichweh D, Blankenship D, Li L, Munagala I et al: A modular analysis framework for blood genomics studies: application to systemic lupus erythematosus. Immunity 2008, 29(1):150-164.
+8. Chaussabel D, Quinn C, Shen J, Patel P, Glaser C, Baldwin N, Stichweh D, Blankenship D, Li L, Munagala I et al: A modular analysis framework for blood genomics studies: application to systemic lupus erythematosus. Immunity 2008, 29(1):150-164.
 
-9.	Li S, Rouphael N, Duraisingham S, Romero-Steiner S, Presnell S, Davis C, Schmidt DS, Johnson SE, Milton A, Rajam G et al: Molecular signatures of antibody responses derived from a systems biology study of five human vaccines. Nat Immunol 2014, 15(2):195-204.
+9. Li S, Rouphael N, Duraisingham S, Romero-Steiner S, Presnell S, Davis C, Schmidt DS, Johnson SE, Milton A, Rajam G et al: Molecular signatures of antibody responses derived from a systems biology study of five human vaccines. Nat Immunol 2014, 15(2):195-204.
 
-10.	Kandasamy K, Mohan SS, Raju R, Keerthikumar S, Kumar GS, Venugopal AK, Telikicherla D, Navarro JD, Mathivanan S, Pecquet C et al: NetPath: a public resource of curated signal transduction pathways. Genome Biol 2010, 11(1):R3.
+10. Kandasamy K, Mohan SS, Raju R, Keerthikumar S, Kumar GS, Venugopal AK, Telikicherla D, Navarro JD, Mathivanan S, Pecquet C et al: NetPath: a public resource of curated signal transduction pathways. Genome Biol 2010, 11(1):R3.
 
